@@ -1,0 +1,16 @@
+qual_vocab_size 4
+hidden_size 256
+qual_vocab $+3D
+tensor cell_qual_emb_weight 4x32 export_lossy4/cell_qual_emb_weight.bin
+tensor cell_base_emb_weight 5x8 export_lossy4/cell_base_emb_weight.bin
+tensor cell_U_r_weight 256x48 export_lossy4/cell_U_r_weight.bin
+tensor cell_U_u_weight 256x48 export_lossy4/cell_U_u_weight.bin
+tensor cell_U_c_weight 256x48 export_lossy4/cell_U_c_weight.bin
+tensor cell_W_r_weight 256x256 export_lossy4/cell_W_r_weight.bin
+tensor cell_W_r_bias 256 export_lossy4/cell_W_r_bias.bin
+tensor cell_W_u_weight 256x256 export_lossy4/cell_W_u_weight.bin
+tensor cell_W_u_bias 256 export_lossy4/cell_W_u_bias.bin
+tensor cell_W_c_weight 256x256 export_lossy4/cell_W_c_weight.bin
+tensor cell_W_c_bias 256 export_lossy4/cell_W_c_bias.bin
+tensor out_proj_weight 4x256 export_lossy4/out_proj_weight.bin
+tensor out_proj_bias 4 export_lossy4/out_proj_bias.bin
