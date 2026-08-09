@@ -1,19 +1,13 @@
-
 #!/bin/bash
-
 set -e
-
 cd "$(dirname "$0")/.."
 
-# -msse4.2 is load-bearing, NOT a tuning choice. -march=native emits whatever
+# Thin wrapper around the CMake build (see CMakeLists.txt at repo root for
+# the actual compiler flags — -msse4.2 fixed, never -march=native). Kept for
+# people who just want `bash compressor/build.sh` to produce
+# compressor/qualgru without thinking about build directories.
 
-# SIMD the build machine has, which changes matmul accumulation order, which
-
-# shifts the low bits of the probabilities and can desync the rANS coder.
-
-# Archives must be readable by binaries built elsewhere.
-
-g++ -O2 -std=c++17 -msse4.2 -DNDEBUG -I /usr/include/eigen3 -I . -I compressor/include compressor/src/qualgru.cpp -o compressor/qualgru -lz
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release -DQUALGRU_BUILD_TESTS=OFF
+cmake --build build -j"$(nproc)" --target qualgru
 
 echo "built compressor/qualgru"
-

@@ -14,12 +14,12 @@ versus what remains.
 
 ## Build and run
 
-Requires Eigen3 and zlib headers:
+Requires Eigen3, zlib, and CMake:
 
 ```bash
 git clone https://github.com/Viharitejomurtula/QualGRU.git
 cd QualGRU
-sudo apt install libeigen3-dev zlib1g-dev g++
+sudo apt install libeigen3-dev zlib1g-dev cmake g++
 ```
 
 Build:
@@ -27,6 +27,19 @@ Build:
 ```bash
 bash compressor/build.sh
 ```
+
+which is a thin wrapper around:
+
+```bash
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j
+```
+
+Either way the binary lands at `compressor/qualgru`, next to `compressor/models/` — model
+weights are resolved relative to the binary at runtime, so the two must stay siblings.
+`ctest --test-dir build` runs the rANS and format unit tests. `cmake --install build --prefix
+<dir>` installs `qualgru` and its models as `<dir>/bin/{qualgru,models/}` for distribution
+outside this checkout.
 
 Compress a FASTQ (plain or `.gz`):
 
@@ -119,6 +132,7 @@ data-limited.
 ## Repository layout
 
 ```
+CMakeLists.txt build for compressor/qualgru, ctest targets, cmake --install packaging
 compressor/    qualgru CLI — rANS coder, threaded encode/decode, build.sh, tests
 inference/     gru_cell.hpp — C++/Eigen forward pass, verified bit-exact vs. PyTorch
 training/      PyTorch trainers (lossless, lossy, custom binning) and weight export
@@ -206,14 +220,15 @@ establish whether the codec was selected in the archive profile.
 - Fixed instruction set at build time (`-msse4.2`, never `-march=native`) — archives must
   remain decodable by a binary built elsewhere, and differing SIMD width changes floating-point
   accumulation order enough to desync the coder
+- CMake build (`CMakeLists.txt`) with `find_package(Eigen3)`/`find_package(ZLIB)`, `ctest`
+  targets for the rANS and format test suites, and `cmake --install` for packaging
+  `qualgru` + `models/` outside this checkout — `build.sh` is now a thin wrapper over it
 
 **Known limitations:**
 
 - Cross-machine determinism (compress on one machine, decompress on another, confirm the
   checksum) has not been tested — the fixed-ISA build flag and CRC exist specifically to make
   this safe, but the claim is unverified
-- No CMake — a shell build script (`build.sh`) covers building the tool, not packaging it for
-  distribution
 - Lossy models (4-bin, matching CoLoRd's quantization scheme) are trained and benchmarked at
   the model level but not wired into the CLI
 - Sequence compression is plain zlib; a reference-based approach (as CRAM and CoLoRd use)
