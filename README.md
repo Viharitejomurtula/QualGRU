@@ -59,7 +59,7 @@ all available cores; default is 4.
 
 ---
 
-## Results — measured, not projected
+## Results
 
 Every number below is bytes on disk and wall-clock seconds, not cross-entropy. That gap —
 flagged as the project's main open risk while only the model existed — is closed.
