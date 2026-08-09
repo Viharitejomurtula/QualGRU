@@ -1,0 +1,16 @@
+qual_vocab_size 50
+hidden_size 32
+qual_vocab "#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRS
+tensor cell_qual_emb_weight 50x32 export_h32/cell_qual_emb_weight.bin
+tensor cell_base_emb_weight 5x8 export_h32/cell_base_emb_weight.bin
+tensor cell_U_r_weight 32x48 export_h32/cell_U_r_weight.bin
+tensor cell_U_u_weight 32x48 export_h32/cell_U_u_weight.bin
+tensor cell_U_c_weight 32x48 export_h32/cell_U_c_weight.bin
+tensor cell_W_r_weight 32x32 export_h32/cell_W_r_weight.bin
+tensor cell_W_r_bias 32 export_h32/cell_W_r_bias.bin
+tensor cell_W_u_weight 32x32 export_h32/cell_W_u_weight.bin
+tensor cell_W_u_bias 32 export_h32/cell_W_u_bias.bin
+tensor cell_W_c_weight 32x32 export_h32/cell_W_c_weight.bin
+tensor cell_W_c_bias 32 export_h32/cell_W_c_bias.bin
+tensor out_proj_weight 50x32 export_h32/out_proj_weight.bin
+tensor out_proj_bias 50 export_h32/out_proj_bias.bin
