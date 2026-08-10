@@ -53,9 +53,15 @@ Decompress:
 ./compressor/qualgru decompress reads.qgru reads_out.fastq --threads 8
 ```
 
-`--model` selects `h64` (default, balanced), `h256` (best ratio), or `h32` (fastest).
-Decompression doesn't take `--model` — it's read from the archive header. `--threads 0` uses
-all available cores; default is 4.
+`--model` selects `h64` (default, balanced), `h256` (best ratio), or `h32` (fastest) for
+lossless mode; `lossy4_h64`, `lossy4_h256`, `lossy4_h32` for lossy mode. Decompression
+doesn't take `--model` — it's read from the archive header. `--threads 0` uses all available
+cores; default is 4.
+
+Lossy mode quantizes quality scores to 4 bins matching CoLoRd's default ONT scheme (edges
+Q7/14/26, representatives Q3/10/18/35) before encoding, so decompressed output is not
+byte-identical to the input — it matches the binned values, which is what the checksum
+verifies. `qualgru compress` prints a note when a lossy model is selected.
 
 ---
 
@@ -223,14 +229,16 @@ establish whether the codec was selected in the archive profile.
 - CMake build (`CMakeLists.txt`) with `find_package(Eigen3)`/`find_package(ZLIB)`, `ctest`
   targets for the rANS and format test suites, and `cmake --install` for packaging
   `qualgru` + `models/` outside this checkout — `build.sh` is now a thin wrapper over it
+- Lossy mode (`--model lossy4_h64`/`lossy4_h256`/`lossy4_h32`), quantizing to CoLoRd's
+  default 4-bin ONT scheme (edges Q7/14/26) before encoding; the checksum verifies against
+  the binned values rather than the unrecoverable originals, and round-trip-verified against
+  an independent reference implementation of the same binning rule
 
 **Known limitations:**
 
 - Cross-machine determinism (compress on one machine, decompress on another, confirm the
   checksum) has not been tested — the fixed-ISA build flag and CRC exist specifically to make
   this safe, but the claim is unverified
-- Lossy models (4-bin, matching CoLoRd's quantization scheme) are trained and benchmarked at
-  the model level but not wired into the CLI
 - Sequence compression is plain zlib; a reference-based approach (as CRAM and CoLoRd use)
   would likely close or reverse the total-archive-size gap, but reference-based sequence
   compression was never this project's contribution

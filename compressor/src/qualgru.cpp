@@ -258,19 +258,25 @@ static inline int decode_symbol(uint32_t &x, const uint8_t **ptr, const FreqTabl
 
 
 
-struct ModelInfo { const char *name; int hidden; };
+struct ModelInfo { const char *name; int hidden; bool lossy; };
 
 static const ModelInfo MODELS[] = {
 
-    { "h64",  64  },
+    { "h64",         64,  false },
 
-    { "h256", 256 },
+    { "h256",        256, false },
 
-    { "h32",  32  },
+    { "h32",         32,  false },
+
+    { "lossy4_h64",  64,  true  },
+
+    { "lossy4_h256", 256, true  },
+
+    { "lossy4_h32",  32,  true  },
 
 };
 
-static constexpr int N_MODELS = 3;
+static constexpr int N_MODELS = 6;
 
 
 
@@ -282,6 +288,23 @@ static int model_id_from_name(const std::string &name) {
 
     return -1;
 
+}
+
+
+
+// The lossy4_* models were trained on quality strings pre-quantized to 4
+// bins matching CoLoRd's default ONT scheme (see
+// training/rnn_ont_torch_v3_lossy_custom.py): edges [7, 14, 26] in Q-value
+// space, bin representatives [3, 10, 18, 35]. This is the only lossy scheme
+// shipped, so it's hardcoded here rather than read from per-model metadata.
+static const int LOSSY4_BIN_EDGES[3] = {7, 14, 26};
+static const int LOSSY4_BIN_REPS[4]  = {3, 10, 18, 35};
+
+static inline char lossy4_quantize(char qual_char) {
+    int q = (int)(unsigned char)qual_char - 33;
+    int idx = (int)(std::upper_bound(LOSSY4_BIN_EDGES, LOSSY4_BIN_EDGES + 3, q)
+                     - LOSSY4_BIN_EDGES);
+    return (char)(LOSSY4_BIN_REPS[idx] + 33);
 }
 
 
@@ -629,6 +652,7 @@ static int cmd_compress(const std::string &in_path,
 
 
     int hidden_size = MODELS[model_id].hidden;
+    bool lossy = MODELS[model_id].lossy;
 
 
 
@@ -732,6 +756,12 @@ static int cmd_compress(const std::string &in_path,
 
         std::vector<uint32_t> states(n_reads);
 
+        // The stream actually encoded -- identical to chunk_reads[r].qual in
+        // lossless mode, but the post-quantization (binned) string in lossy
+        // mode. Used for the CRC below so the checksum verifies against what
+        // decompression can actually reproduce, not the unrecoverable original.
+        std::vector<std::string> canon_quals(n_reads);
+
         std::atomic<bool> failed{false};
 
         std::atomic<size_t> next_read{0};
@@ -762,7 +792,14 @@ static int cmd_compress(const std::string &in_path,
 
                 if (len < 2) {
 
-                    first_syms[r]   = (len == 1) ? (uint8_t)qual_stoi.at(qual[0]) : 0;
+                    if (len == 1) {
+                        char qc = lossy ? lossy4_quantize(qual[0]) : qual[0];
+                        int idx = (int)qual_stoi.at(qc);
+                        first_syms[r]  = (uint8_t)idx;
+                        canon_quals[r] = std::string(1, qual_vocab[idx]);
+                    } else {
+                        first_syms[r] = 0;
+                    }
 
                     states[r]       = LOWER;
 
@@ -780,13 +817,15 @@ static int cmd_compress(const std::string &in_path,
 
                 for (int t = 0; t < len; t++) {
 
-                    auto qi = qual_stoi.find(qual[t]);
+                    char qc = lossy ? lossy4_quantize(qual[t]) : qual[t];
+
+                    auto qi = qual_stoi.find(qc);
 
                     if (qi == qual_stoi.end()) {
 
                         fprintf(stderr, "quality char 0x%02x not in vocabulary\n",
 
-                                (unsigned char)qual[t]);
+                                (unsigned char)qc);
 
                         failed.store(true);
 
@@ -809,6 +848,12 @@ static int cmd_compress(const std::string &in_path,
 
 
                 first_syms[r] = (uint8_t)q_idx[0];
+
+
+
+                canon_quals[r].resize(len);
+
+                for (int t = 0; t < len; t++) canon_quals[r][t] = qual_vocab[q_idx[t]];
 
 
 
@@ -880,7 +925,7 @@ static int cmd_compress(const std::string &in_path,
 
 
 
-            crc_quals = crc32(crc_quals, (const Bytef*)chunk_reads[r].qual.data(), chunk_reads[r].qual.size());
+            crc_quals = crc32(crc_quals, (const Bytef*)canon_quals[r].data(), canon_quals[r].size());
 
             crc_seqs  = crc32(crc_seqs,  (const Bytef*)chunk_reads[r].seq.data(),  chunk_reads[r].seq.size());
 
@@ -1014,7 +1059,13 @@ static int cmd_compress(const std::string &in_path,
 
     printf("%s -> %s\n", in_path.c_str(), out_path.c_str());
 
-    printf("  model      %s\n", MODELS[model_id].name);
+    printf("  model      %s%s\n", MODELS[model_id].name, lossy ? "  (lossy, 4-bin)" : "");
+
+    if (lossy)
+
+        fprintf(stderr, "note: lossy mode -- decompressed quality values are quantized to "
+
+                         "4 bins (edges Q7/14/26), not byte-identical to the input\n");
 
     printf("  reads      %llu  (%llu symbols, %llu chunks)\n",
 
@@ -1424,7 +1475,9 @@ static int cmd_decompress(const std::string &in_path,
 
     printf("%s -> %s\n", in_path.c_str(), out_path.c_str());
 
-    printf("  model      %s\n", MODELS[h.model_id].name);
+    printf("  model      %s%s\n", MODELS[h.model_id].name,
+
+            MODELS[h.model_id].lossy ? "  (lossy, 4-bin)" : "");
 
     printf("  reads      %llu  (%llu symbols, %llu chunks)\n",
 
@@ -1469,6 +1522,16 @@ static void usage() {
         "  qualgru_chunked compress   <in.fastq[.gz]> <out.qchk> [--model NAME] [--threads N]\n"
 
         "  qualgru_chunked decompress <in.qchk>       <out.fastq> [--threads N]\n"
+
+        "\n"
+
+        "Models: h64 (default), h256, h32 -- lossless, byte-identical round trip.\n"
+
+        "        lossy4_h64, lossy4_h256, lossy4_h32 -- 4-bin quantized (CoLoRd's\n"
+
+        "        default ONT scheme, edges Q7/14/26); decompressed output matches\n"
+
+        "        the binned quality values, not the original bytes.\n"
 
         "\n"
 
