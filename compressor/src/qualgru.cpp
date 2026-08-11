@@ -1,16 +1,14 @@
-// qualgru_chunked.cpp — chunked compress/decompress, standalone for testing.
+// qualgru.cpp — chunked compress/decompress CLI (qualgru compress / decompress).
 
 //
 
-// Same coder, same model interface, same threading pattern as qualgru.cpp.
+// Reads are processed in blocks of CHUNK_SIZE, each block fully
 
-// The only thing this changes is the FILE LAYOUT: reads are processed in
+// self-contained (own tables, own zlib'd names/sequences, own quality
 
-// blocks of CHUNK_SIZE, each block fully self-contained (own tables, own
+// bytes), written and freed before the next block starts. Memory is bounded
 
-// zlib'd names/sequences, own quality bytes), written and freed before the
-
-// next block starts. Memory is bounded by chunk size, not file size.
+// by chunk size, not file size.
 
 //
 
@@ -24,21 +22,7 @@
 
 //
 
-// This is deliberately a SEPARATE binary from qualgru.cpp. Compare its ratio
-
-// and speed against the unchunked format on the same input before deciding
-
-// whether to merge it in.
-
-//
-
-// Build (from compressor_ont):
-
-//   g++ -O2 -std=c++17 -msse4.2 -DNDEBUG -I /usr/include/eigen3 -I . \
-
-//       -I compressor/include compressor/src/qualgru_chunked.cpp \
-
-//       -o compressor/qualgru_chunked -lz -lpthread
+// Build: see CMakeLists.txt at the repo root, or compressor/build.sh.
 
 
 
@@ -1141,7 +1125,7 @@ static int cmd_decompress(const std::string &in_path,
 
     if (!read_archive_header(p, file.size(), h)) {
 
-        fprintf(stderr, "%s is not a valid QCHK archive\n", in_path.c_str());
+        fprintf(stderr, "%s is not a valid QGRU archive\n", in_path.c_str());
 
         return 1;
 
@@ -1515,13 +1499,13 @@ static void usage() {
 
     fprintf(stderr,
 
-        "qualgru_chunked -- standalone test of chunked compression\n"
+        "qualgru -- chunked FASTQ quality-score compressor\n"
 
         "\n"
 
-        "  qualgru_chunked compress   <in.fastq[.gz]> <out.qchk> [--model NAME] [--threads N]\n"
+        "  qualgru compress   <in.fastq[.gz]> <out.qgru> [--model NAME] [--threads N]\n"
 
-        "  qualgru_chunked decompress <in.qchk>       <out.fastq> [--threads N]\n"
+        "  qualgru decompress <in.qgru>       <out.fastq> [--threads N]\n"
 
         "\n"
 
@@ -1535,11 +1519,9 @@ static void usage() {
 
         "\n"
 
-        "Archives use a DIFFERENT format from .qgru (magic QCHK, not QGRU) --\n"
+        "Archives are self-describing (magic QGRU) -- decompress reads the model\n"
 
-        "the two are not interchangeable. This binary exists to compare ratio\n"
-
-        "and speed against the unchunked format before merging.\n");
+        "and chunk count from the archive header, so --model is compress-only.\n");
 
 }
 
