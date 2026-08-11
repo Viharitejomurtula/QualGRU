@@ -233,6 +233,10 @@ establish whether the codec was selected in the archive profile.
   default 4-bin ONT scheme (edges Q7/14/26) before encoding; the checksum verifies against
   the binned values rather than the unrecoverable originals, and round-trip-verified against
   an independent reference implementation of the same binning rule
+- Validated against real GIAB HG002 nanopore data, not just synthetic test files — a slice
+  pulled directly from the public `ont-open-data` S3 bucket's flowcell PAW70337 BAM via HTTP
+  range requests (no full download needed) round-tripped byte-identically in lossless mode
+  and quantized correctly, with `checksum OK`, in lossy mode
 
 **Known limitations:**
 
