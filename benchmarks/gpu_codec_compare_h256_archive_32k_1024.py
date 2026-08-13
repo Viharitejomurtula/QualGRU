@@ -28,15 +28,15 @@ LOWER = 1 << 23
 
 
 
-BATCH = 16384
+BATCH = 32768
 
-SEQ_LEN = 256
+SEQ_LEN = 1024
 
 
 
 ROOT = Path(__file__).resolve().parents[1]
 
-MODEL = ROOT / "compressor" / "models" / "h64"
+MODEL = ROOT / "compressor" / "models" / "h256"
 
 
 
@@ -52,7 +52,8 @@ DEVICE = "cuda"
 
 
 
-torch.backends.cuda.matmul.allow_tf32 = False
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.set_float32_matmul_precision("high")
 
 
 
@@ -74,7 +75,7 @@ with open(MODEL / "vocab.txt") as f:
 
 V = len(vocab)
 
-H = 64
+H = 256
 
 QE = 32
 
@@ -390,95 +391,150 @@ def quantise_gpu(probs):
 
 
 
-    floored = torch.floor(scaled)
+    freq = torch.floor(
 
-    freq = floored.to(torch.int64)
-
-
-
-    freq = torch.clamp(freq, min=1)
-
-
-
-    total = freq.sum(dim=1)
-
-
-
-    # Underfull rows: largest-remainder allocation.
-
-    deficit = torch.clamp(
-
-        M - total,
-
-        min=0,
-
-    )
-
-
-
-    frac = scaled - floored
-
-
-
-    order = torch.argsort(
-
-        frac,
-
-        dim=1,
-
-        descending=True,
-
-    )
-
-
-
-    ranks = torch.arange(
-
-        V,
-
-        device=DEVICE,
-
-    ).unsqueeze(0)
-
-
-
-    add_rank = (
-
-        ranks < deficit.unsqueeze(1)
+        scaled
 
     ).to(torch.int64)
 
 
 
-    additions = torch.zeros_like(freq)
+    # rANS requires every symbol to have positive frequency.
 
-    additions.scatter_(
+    freq = torch.clamp(
+
+        freq,
+
+        min=1,
+
+    )
+
+
+
+    total = freq.sum(
+
+        dim=1
+
+    )
+
+
+
+    # Residual needed to make each row sum exactly to M.
+
+    delta = M - total
+
+
+
+    # Put the residual into the largest-frequency symbol.
+
+    # Avoids the expensive per-row argsort.
+
+    biggest = torch.argmax(
+
+        freq,
+
+        dim=1,
+
+        keepdim=True,
+
+    )
+
+
+
+    freq.scatter_add_(
 
         1,
 
-        order,
+        biggest,
 
-        add_rank,
+        delta.unsqueeze(1),
+
+    )
+
+
+
+    prefix = torch.cumsum(
+
+        freq,
+
+        dim=1,
 
     )
 
 
 
-    freq += additions
+    zeros = torch.zeros(
 
+        freq.shape[0],
 
+        1,
 
-    # Overfull can happen because zero floors were clamped to 1.
+        dtype=freq.dtype,
 
-    # Remove excess from the largest bucket.
-
-    excess = torch.clamp(
-
-        freq.sum(dim=1) - M,
-
-        min=0,
+        device=freq.device,
 
     )
+
+
+
+    cum = torch.cat(
+
+        (zeros, prefix),
+
+        dim=1,
+
+    )
+
+
+
+    return freq, cum
+# ------------------------------------------------------------
+
+# Forward pass for encoder:
+
+# build GPU frequency tables from true previous symbols.
+
+# Store only freq; cumulative values can be reconstructed.
+
+# ------------------------------------------------------------
+
+
+
+print()
+
+
+
+@torch.no_grad()
+
+def quantise_freq_only(probs):
+
+
+
+    scaled = probs * float(M)
+
+
+
+    freq = torch.floor(
+
+        scaled
+
+    ).to(torch.int64)
+
+
+
+    freq = torch.clamp(
+
+        freq,
+
+        min=1,
+
+    )
+
+
+
+    total = freq.sum(dim=1)
+
+    delta = M - total
 
 
 
@@ -500,69 +556,107 @@ def quantise_gpu(probs):
 
         biggest,
 
-        -excess.unsqueeze(1),
+        delta.unsqueeze(1),
 
     )
 
 
 
-    cum = torch.cumsum(
-
-        freq,
-
-        dim=1,
-
-    )
-
-
-
-    cum = torch.cat(
-
-        (
-
-            torch.zeros(
-
-                freq.shape[0],
-
-                1,
-
-                dtype=torch.int64,
-
-                device=DEVICE,
-
-            ),
-
-            cum,
-
-        ),
-
-        dim=1,
-
-    )
-
-
-
-    return freq, cum
+    return freq
 
 
 
 
-
-# ------------------------------------------------------------
-
-# Forward pass for encoder:
-
-# build GPU frequency tables from true previous symbols.
-
-# Store only freq; cumulative values can be reconstructed.
-
-# ------------------------------------------------------------
-
-
-
-print()
 
 print("===== GPU ENCODE MODEL/TABLE PASS =====")
+
+
+
+
+
+# ------------------------------------------------------------
+
+# Warm CUDA/cuBLAS/model kernels before timed compression.
+
+# Reset hidden state afterwards, so this does not affect output.
+
+# ------------------------------------------------------------
+
+print("warming GPU...")
+
+
+
+h_warm = torch.zeros(
+
+    BATCH,
+
+    H,
+
+    dtype=torch.float32,
+
+    device=DEVICE,
+
+)
+
+
+
+scratch_freq = torch.empty(
+
+    BATCH,
+
+    V,
+
+    dtype=torch.int32,
+
+    device=DEVICE,
+
+)
+
+
+
+for wt in range(16):
+
+    h_warm, warm_probs = model_step(
+
+        h_warm,
+
+        q_true[:, wt],
+
+        bases[:, wt],
+
+        bases[:, wt + 1],
+
+    )
+
+
+
+    warm_freq = quantise_freq_only(
+
+        warm_probs
+
+    )
+
+
+
+    scratch_freq[:] = warm_freq.to(
+
+        torch.int32
+
+    )
+
+
+
+torch.cuda.synchronize()
+
+
+
+del h_warm
+
+del warm_probs
+
+del warm_freq
+
+del scratch_freq
 
 
 
@@ -620,7 +714,7 @@ for t in range(SEQ_LEN - 1):
 
 
 
-    freq, _ = quantise_gpu(probs)
+    freq = quantise_freq_only(probs)
 
 
 
@@ -900,6 +994,42 @@ encoded_bytes = (
 
 
 
+
+
+full_compress_seconds = table_seconds + rans_enc_seconds
+
+full_compress_symbols = BATCH * (SEQ_LEN - 1)
+
+full_compress_rate = full_compress_symbols / full_compress_seconds
+
+
+
+print()
+
+print("===== FULL GPU COMPRESSION =====")
+
+print(
+
+    "compression rate:",
+
+    f"{full_compress_rate / 1e6:.3f}",
+
+    "M symbols/s",
+
+)
+
+print(
+
+    "TARGET_50M:",
+
+    "PASS" if full_compress_rate >= 50e6 else "FAIL",
+
+)
+
+print()
+
+
+
 rans_bpc = (
 
     8.0 * encoded_bytes
@@ -955,6 +1085,166 @@ print("rANS quality bpc:", f"{rans_bpc:.4f}")
 
 
 print()
+
+
+
+# ------------------------------------------------------------
+
+# TRUE QUALITY-STREAM / ARCHIVE ACCOUNTING
+
+# ------------------------------------------------------------
+
+
+
+# encoded_bytes currently contains only rANS renormalization bytes.
+
+payload_bytes = int(encoded_bytes)
+
+
+
+# Decoder currently receives xstate directly. A real archive must
+
+# serialize one final rANS state per read.
+
+max_final_state = int(xstate.max().item())
+
+
+
+if max_final_state > 0xFFFFFFFF:
+
+    raise RuntimeError(
+
+        f"final rANS state does not fit uint32: {max_final_state}"
+
+    )
+
+
+
+state_bytes = BATCH * 4
+
+
+
+# Decoder also currently receives q[:,0] for free.
+
+# Quality vocab <=256, so one byte/read is sufficient.
+
+seed_bytes = BATCH
+
+
+
+# Conservative self-contained framing:
+
+# one uint32 compressed-payload length per independent read stream.
+
+length_bytes = BATCH * 4
+
+
+
+total_quality_symbols = BATCH * SEQ_LEN
+
+encoded_transitions = BATCH * (SEQ_LEN - 1)
+
+
+
+codec_bytes = (
+
+    payload_bytes
+
+    + state_bytes
+
+    + seed_bytes
+
+)
+
+
+
+archive_bytes = (
+
+    codec_bytes
+
+    + length_bytes
+
+)
+
+
+
+payload_bpc_all_symbols = (
+
+    payload_bytes * 8.0
+
+    / total_quality_symbols
+
+)
+
+
+
+codec_bpc = (
+
+    codec_bytes * 8.0
+
+    / total_quality_symbols
+
+)
+
+
+
+archive_bpc = (
+
+    archive_bytes * 8.0
+
+    / total_quality_symbols
+
+)
+
+
+
+print()
+
+print("===== TRUE ARCHIVE ACCOUNTING =====")
+
+print("quality symbols:", total_quality_symbols)
+
+print("encoded transitions:", encoded_transitions)
+
+print("payload bytes:", payload_bytes)
+
+print("final-state bytes:", state_bytes)
+
+print("first-Q seed bytes:", seed_bytes)
+
+print("stream-length bytes:", length_bytes)
+
+print("max final rANS state:", max_final_state)
+
+print("FINAL_STATE_UINT32:", "PASS")
+
+print(
+
+    "payload bpc over ALL quality symbols:",
+
+    f"{payload_bpc_all_symbols:.4f}",
+
+)
+
+print(
+
+    "codec-required quality bpc:",
+
+    f"{codec_bpc:.4f}",
+
+)
+
+print(
+
+    "self-contained archive bpc:",
+
+    f"{archive_bpc:.4f}",
+
+)
+
+print()
+
+
 
 print("===== FULL GPU DECODE =====")
 

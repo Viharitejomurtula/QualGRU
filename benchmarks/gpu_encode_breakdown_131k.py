@@ -28,7 +28,7 @@ LOWER = 1 << 23
 
 
 
-BATCH = 16384
+BATCH = 131072
 
 SEQ_LEN = 256
 
@@ -52,7 +52,8 @@ DEVICE = "cuda"
 
 
 
-torch.backends.cuda.matmul.allow_tf32 = False
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.set_float32_matmul_precision("high")
 
 
 
@@ -390,95 +391,154 @@ def quantise_gpu(probs):
 
 
 
-    floored = torch.floor(scaled)
+    freq = torch.floor(
 
-    freq = floored.to(torch.int64)
-
-
-
-    freq = torch.clamp(freq, min=1)
-
-
-
-    total = freq.sum(dim=1)
-
-
-
-    # Underfull rows: largest-remainder allocation.
-
-    deficit = torch.clamp(
-
-        M - total,
-
-        min=0,
-
-    )
-
-
-
-    frac = scaled - floored
-
-
-
-    order = torch.argsort(
-
-        frac,
-
-        dim=1,
-
-        descending=True,
-
-    )
-
-
-
-    ranks = torch.arange(
-
-        V,
-
-        device=DEVICE,
-
-    ).unsqueeze(0)
-
-
-
-    add_rank = (
-
-        ranks < deficit.unsqueeze(1)
+        scaled
 
     ).to(torch.int64)
 
 
 
-    additions = torch.zeros_like(freq)
+    # rANS requires every symbol to have positive frequency.
 
-    additions.scatter_(
+    freq = torch.clamp(
+
+        freq,
+
+        min=1,
+
+    )
+
+
+
+    total = freq.sum(
+
+        dim=1
+
+    )
+
+
+
+    # Residual needed to make each row sum exactly to M.
+
+    delta = M - total
+
+
+
+    # Put the residual into the largest-frequency symbol.
+
+    # Avoids the expensive per-row argsort.
+
+    biggest = torch.argmax(
+
+        freq,
+
+        dim=1,
+
+        keepdim=True,
+
+    )
+
+
+
+    freq.scatter_add_(
 
         1,
 
-        order,
+        biggest,
 
-        add_rank,
+        delta.unsqueeze(1),
+
+    )
+
+
+
+    prefix = torch.cumsum(
+
+        freq,
+
+        dim=1,
 
     )
 
 
 
-    freq += additions
+    zeros = torch.zeros(
 
+        freq.shape[0],
 
+        1,
 
-    # Overfull can happen because zero floors were clamped to 1.
+        dtype=freq.dtype,
 
-    # Remove excess from the largest bucket.
-
-    excess = torch.clamp(
-
-        freq.sum(dim=1) - M,
-
-        min=0,
+        device=freq.device,
 
     )
+
+
+
+    cum = torch.cat(
+
+        (zeros, prefix),
+
+        dim=1,
+
+    )
+
+
+
+    return freq, cum
+# ------------------------------------------------------------
+
+# Forward pass for encoder:
+
+# build GPU frequency tables from true previous symbols.
+
+# Store only freq; cumulative values can be reconstructed.
+
+# ------------------------------------------------------------
+
+
+
+print()
+
+
+
+print()
+
+print("===== ENCODE FORWARD-PASS BREAKDOWN =====")
+
+
+
+@torch.no_grad()
+
+def quantise_freq_only(probs):
+
+    scaled = probs * float(M)
+
+
+
+    freq = torch.floor(
+
+        scaled
+
+    ).to(torch.int64)
+
+
+
+    freq = torch.clamp(
+
+        freq,
+
+        min=1,
+
+    )
+
+
+
+    total = freq.sum(dim=1)
+
+    delta = M - total
 
 
 
@@ -500,67 +560,201 @@ def quantise_gpu(probs):
 
         biggest,
 
-        -excess.unsqueeze(1),
+        delta.unsqueeze(1),
 
     )
 
 
 
-    cum = torch.cumsum(
-
-        freq,
-
-        dim=1,
-
-    )
+    return freq
 
 
 
-    cum = torch.cat(
 
-        (
 
-            torch.zeros(
+@torch.no_grad()
 
-                freq.shape[0],
+def benchmark_encode_pass(name, build_cum, store_freq):
 
-                1,
+    h_test = torch.zeros(
 
-                dtype=torch.int64,
+        BATCH,
 
-                device=DEVICE,
+        H,
 
-            ),
+        dtype=torch.float32,
 
-            cum,
-
-        ),
-
-        dim=1,
+        device=DEVICE,
 
     )
 
 
 
-    return freq, cum
+    table = None
+
+
+
+    if store_freq:
+
+        table = torch.empty(
+
+            BATCH,
+
+            SEQ_LEN - 1,
+
+            V,
+
+            dtype=torch.int32,
+
+            device=DEVICE,
+
+        )
+
+
+
+    torch.cuda.synchronize()
+
+    start = time.perf_counter()
+
+
+
+    for t in range(SEQ_LEN - 1):
+
+        h_test, probs = model_step(
+
+            h_test,
+
+            q_true[:, t],
+
+            bases[:, t],
+
+            bases[:, t + 1],
+
+        )
+
+
+
+        if build_cum:
+
+            freq, _ = quantise_gpu(probs)
+
+        else:
+
+            freq = quantise_freq_only(probs)
+
+
+
+        if store_freq:
+
+            table[:, t, :] = freq.to(torch.int32)
+
+
+
+    torch.cuda.synchronize()
+
+
+
+    seconds = time.perf_counter() - start
+
+    symbols = BATCH * (SEQ_LEN - 1)
+
+    rate = symbols / seconds
+
+
+
+    print(
+
+        f"{name}: "
+
+        f"{rate / 1e6:.3f} M symbols/s "
+
+        f"({seconds:.4f} s)"
+
+    )
+
+
+
+    if table is not None:
+
+        # Force one tiny use so the allocation/write path is unquestionably real.
+
+        checksum = int(table[0, 0, :].sum().item())
+
+        print(f"{name} checksum:", checksum)
+
+        del table
+
+        torch.cuda.empty_cache()
 
 
 
 
 
-# ------------------------------------------------------------
+benchmark_encode_pass(
 
-# Forward pass for encoder:
+    "A_CURRENT_store_plus_cum",
 
-# build GPU frequency tables from true previous symbols.
+    build_cum=True,
 
-# Store only freq; cumulative values can be reconstructed.
+    store_freq=True,
 
-# ------------------------------------------------------------
+)
+
+
+
+benchmark_encode_pass(
+
+    "B_NOSTORE_plus_cum",
+
+    build_cum=True,
+
+    store_freq=False,
+
+)
+
+
+
+benchmark_encode_pass(
+
+    "C_STORE_freq_only",
+
+    build_cum=False,
+
+    store_freq=True,
+
+)
+
+
+
+benchmark_encode_pass(
+
+    "D_NOSTORE_freq_only",
+
+    build_cum=False,
+
+    store_freq=False,
+
+)
 
 
 
 print()
+
+print("Interpretation:")
+
+print("A->B isolates full-table write cost")
+
+print("A->C isolates unnecessary CDF construction cost")
+
+print("C->D isolates table write cost with optimized quantizer")
+
+print("D is GRU + frequency-generation ceiling")
+
+
+
+raise SystemExit(0)
+
+
 
 print("===== GPU ENCODE MODEL/TABLE PASS =====")
 

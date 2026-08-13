@@ -28,7 +28,7 @@ LOWER = 1 << 23
 
 
 
-BATCH = 16384
+BATCH = 32768
 
 SEQ_LEN = 256
 

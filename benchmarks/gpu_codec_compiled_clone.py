@@ -28,7 +28,7 @@ LOWER = 1 << 23
 
 
 
-BATCH = 16384
+BATCH = 4096
 
 SEQ_LEN = 256
 
@@ -1020,131 +1020,397 @@ start_event.record()
 
 
 
-for t in range(SEQ_LEN - 1):
+
+
+# ------------------------------------------------------------
+
+# Compiled multi-timestep full decoder.
+
+#
+
+# The decoded symbol from each rANS step is fed directly into
+
+# the next GRU step inside the same compiled graph.
+
+# ------------------------------------------------------------
 
 
 
-    h, probs = model_step(
+def make_decode_chunk(K):
+
+
+
+    def decode_chunk(
 
         h,
 
-        decoded[:, t],
+        q,
 
-        bases[:, t],
+        b0s,
 
-        bases[:, t + 1],
+        b1s,
 
-    )
+        dx,
 
+        dptr,
 
-
-    freq, cum = quantise_gpu(probs)
-
-
-
-    slot = dx & (M - 1)
+    ):
 
 
 
-    # Find symbol whose cumulative range contains slot.
-
-    symbol = (
-
-        cum[:, 1:]
-
-        <= slot.unsqueeze(1)
-
-    ).sum(dim=1)
+        outputs = []
 
 
 
-    fs = freq.gather(
-
-        1,
-
-        symbol.unsqueeze(1),
-
-    ).squeeze(1)
+        for i in range(K):
 
 
 
-    cs = cum.gather(
+            h, probs = model_step(
 
-        1,
+                h,
 
-        symbol.unsqueeze(1),
+                q,
 
-    ).squeeze(1)
+                b0s[:, i],
 
+                b1s[:, i],
 
-
-    dx = (
-
-        fs * (dx >> PROB_BITS)
-
-        + slot
-
-        - cs
-
-    )
+            )
 
 
 
-    # rANS renormalisation.
-
-    for _ in range(4):
+            freq, cum = quantise_gpu(probs)
 
 
 
-        need = dx < LOWER
+            slot = dx & (M - 1)
 
 
 
-        safe_ptr = torch.clamp(
+            symbol = (
 
-            dptr,
+                cum[:, 1:]
 
-            min=0,
+                <= slot.unsqueeze(1)
 
-            max=MAX_BYTES - 1,
-
-        )
+            ).sum(dim=1)
 
 
 
-        byte = streams[
+            fs = freq.gather(
 
-            rows,
+                1,
 
-            safe_ptr,
+                symbol.unsqueeze(1),
 
-        ].to(torch.int64)
+            ).squeeze(1)
 
 
 
-        dx = torch.where(
+            cs = cum.gather(
 
-            need,
+                1,
 
-            (dx << 8) | byte,
+                symbol.unsqueeze(1),
+
+            ).squeeze(1)
+
+
+
+            dx = (
+
+                fs * (dx >> PROB_BITS)
+
+                + slot
+
+                - cs
+
+            )
+
+
+
+            # rANS renormalisation
+
+            for _ in range(4):
+
+
+
+                need = dx < LOWER
+
+
+
+                safe_ptr = torch.clamp(
+
+                    dptr,
+
+                    min=0,
+
+                    max=MAX_BYTES - 1,
+
+                )
+
+
+
+                byte = streams[
+
+                    rows,
+
+                    safe_ptr,
+
+                ].to(torch.int64)
+
+
+
+                dx = torch.where(
+
+                    need,
+
+                    (dx << 8) | byte,
+
+                    dx,
+
+                )
+
+
+
+                dptr = (
+
+                    dptr
+
+                    + need.to(torch.int64)
+
+                )
+
+
+
+            outputs.append(symbol)
+
+
+
+            # Critical recurrence:
+
+            # decoded Q becomes the next GRU input.
+
+            q = symbol
+
+
+
+        return (
+
+            h,
+
+            q,
 
             dx,
 
-        )
+            dptr,
 
-
-
-        dptr = (
-
-            dptr
-
-            + need.to(torch.int64)
+            torch.stack(outputs, dim=1),
 
         )
 
 
 
-    decoded[:, t + 1] = symbol
+    return decode_chunk
+
+
+
+
+
+decode8 = torch.compile(
+
+    make_decode_chunk(8),
+
+    mode="reduce-overhead",
+
+    fullgraph=False,
+
+)
+
+
+
+decode7 = torch.compile(
+
+    make_decode_chunk(7),
+
+    mode="reduce-overhead",
+
+    fullgraph=False,
+
+)
+
+
+
+
+
+# ------------------------------------------------------------
+
+# Compile/warm up OUTSIDE benchmark timing.
+
+# ------------------------------------------------------------
+
+
+
+with torch.no_grad():
+
+
+
+    wh = h.clone()
+
+    wdx = dx.clone()
+
+    wdptr = dptr.clone()
+
+    wq = decoded[:, 0].clone()
+
+
+
+    decode8(
+
+        wh,
+
+        wq,
+
+        bases[:, 0:8],
+
+        bases[:, 1:9],
+
+        wdx,
+
+        wdptr,
+
+    )
+
+
+
+    # 255 decode steps = 31*8 + 7
+
+    decode7(
+
+        wh,
+
+        wq,
+
+        bases[:, 248:255],
+
+        bases[:, 249:256],
+
+        wdx,
+
+        wdptr,
+
+    )
+
+
+
+torch.cuda.synchronize()
+
+
+
+
+
+start_event.record()
+
+
+
+
+
+# 31 full chunks = 248 symbols.
+
+q_current = decoded[:, 0]
+
+
+
+for t in range(0, 248, 8):
+
+
+
+    (
+
+        h,
+
+        q_current,
+
+        dx,
+
+        dptr,
+
+        out,
+
+    ) = decode8(
+
+        h,
+
+        q_current,
+
+        bases[:, t:t + 8],
+
+        bases[:, t + 1:t + 9],
+
+        dx,
+
+        dptr,
+
+    )
+
+
+
+    decoded[:, t + 1:t + 9] = out
+
+
+
+    # torch.compile(mode="reduce-overhead") uses CUDA Graphs.
+
+    # Preserve recurrent state before the next graph replay.
+
+    h = h.clone()
+
+    q_current = q_current.clone()
+
+    dx = dx.clone()
+
+    dptr = dptr.clone()
+
+
+
+
+
+# Final 7 symbols: positions 249..255.
+
+(
+
+    h,
+
+    q_current,
+
+    dx,
+
+    dptr,
+
+    out,
+
+) = decode7(
+
+    h,
+
+    q_current,
+
+    bases[:, 248:255],
+
+    bases[:, 249:256],
+
+    dx,
+
+    dptr,
+
+)
+
+
+
+decoded[:, 249:256] = out
+
+
 
 
 

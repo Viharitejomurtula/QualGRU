@@ -28,7 +28,7 @@ LOWER = 1 << 23
 
 
 
-BATCH = 16384
+BATCH = 98304
 
 SEQ_LEN = 256
 
@@ -52,7 +52,8 @@ DEVICE = "cuda"
 
 
 
-torch.backends.cuda.matmul.allow_tf32 = False
+torch.backends.cuda.matmul.allow_tf32 = True
+torch.set_float32_matmul_precision("high")
 
 
 
@@ -390,97 +391,43 @@ def quantise_gpu(probs):
 
 
 
-    floored = torch.floor(scaled)
+    freq = torch.floor(
 
-    freq = floored.to(torch.int64)
-
-
-
-    freq = torch.clamp(freq, min=1)
-
-
-
-    total = freq.sum(dim=1)
-
-
-
-    # Underfull rows: largest-remainder allocation.
-
-    deficit = torch.clamp(
-
-        M - total,
-
-        min=0,
-
-    )
-
-
-
-    frac = scaled - floored
-
-
-
-    order = torch.argsort(
-
-        frac,
-
-        dim=1,
-
-        descending=True,
-
-    )
-
-
-
-    ranks = torch.arange(
-
-        V,
-
-        device=DEVICE,
-
-    ).unsqueeze(0)
-
-
-
-    add_rank = (
-
-        ranks < deficit.unsqueeze(1)
+        scaled
 
     ).to(torch.int64)
 
 
 
-    additions = torch.zeros_like(freq)
+    # rANS requires every symbol to have positive frequency.
 
-    additions.scatter_(
+    freq = torch.clamp(
 
-        1,
+        freq,
 
-        order,
-
-        add_rank,
+        min=1,
 
     )
 
 
 
-    freq += additions
+    total = freq.sum(
 
-
-
-    # Overfull can happen because zero floors were clamped to 1.
-
-    # Remove excess from the largest bucket.
-
-    excess = torch.clamp(
-
-        freq.sum(dim=1) - M,
-
-        min=0,
+        dim=1
 
     )
 
 
+
+    # Residual needed to make each row sum exactly to M.
+
+    delta = M - total
+
+
+
+    # Put the residual into the largest-frequency symbol.
+
+    # Avoids the expensive per-row argsort.
 
     biggest = torch.argmax(
 
@@ -500,13 +447,13 @@ def quantise_gpu(probs):
 
         biggest,
 
-        -excess.unsqueeze(1),
+        delta.unsqueeze(1),
 
     )
 
 
 
-    cum = torch.cumsum(
+    prefix = torch.cumsum(
 
         freq,
 
@@ -516,25 +463,23 @@ def quantise_gpu(probs):
 
 
 
+    zeros = torch.zeros(
+
+        freq.shape[0],
+
+        1,
+
+        dtype=freq.dtype,
+
+        device=freq.device,
+
+    )
+
+
+
     cum = torch.cat(
 
-        (
-
-            torch.zeros(
-
-                freq.shape[0],
-
-                1,
-
-                dtype=torch.int64,
-
-                device=DEVICE,
-
-            ),
-
-            cum,
-
-        ),
+        (zeros, prefix),
 
         dim=1,
 
@@ -543,11 +488,6 @@ def quantise_gpu(probs):
 
 
     return freq, cum
-
-
-
-
-
 # ------------------------------------------------------------
 
 # Forward pass for encoder:

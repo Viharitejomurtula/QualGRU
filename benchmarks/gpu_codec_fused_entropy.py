@@ -9,6 +9,8 @@ from pathlib import Path
 import numpy as np
 
 import torch
+import triton
+import triton.language as tl
 
 
 
@@ -390,97 +392,43 @@ def quantise_gpu(probs):
 
 
 
-    floored = torch.floor(scaled)
+    freq = torch.floor(
 
-    freq = floored.to(torch.int64)
-
-
-
-    freq = torch.clamp(freq, min=1)
-
-
-
-    total = freq.sum(dim=1)
-
-
-
-    # Underfull rows: largest-remainder allocation.
-
-    deficit = torch.clamp(
-
-        M - total,
-
-        min=0,
-
-    )
-
-
-
-    frac = scaled - floored
-
-
-
-    order = torch.argsort(
-
-        frac,
-
-        dim=1,
-
-        descending=True,
-
-    )
-
-
-
-    ranks = torch.arange(
-
-        V,
-
-        device=DEVICE,
-
-    ).unsqueeze(0)
-
-
-
-    add_rank = (
-
-        ranks < deficit.unsqueeze(1)
+        scaled
 
     ).to(torch.int64)
 
 
 
-    additions = torch.zeros_like(freq)
+    # rANS requires every symbol to have positive frequency.
 
-    additions.scatter_(
+    freq = torch.clamp(
 
-        1,
+        freq,
 
-        order,
-
-        add_rank,
+        min=1,
 
     )
 
 
 
-    freq += additions
+    total = freq.sum(
 
-
-
-    # Overfull can happen because zero floors were clamped to 1.
-
-    # Remove excess from the largest bucket.
-
-    excess = torch.clamp(
-
-        freq.sum(dim=1) - M,
-
-        min=0,
+        dim=1
 
     )
 
 
+
+    # Residual needed to make each row sum exactly to M.
+
+    delta = M - total
+
+
+
+    # Put the residual into the largest-frequency symbol.
+
+    # Avoids the expensive per-row argsort.
 
     biggest = torch.argmax(
 
@@ -500,13 +448,13 @@ def quantise_gpu(probs):
 
         biggest,
 
-        -excess.unsqueeze(1),
+        delta.unsqueeze(1),
 
     )
 
 
 
-    cum = torch.cumsum(
+    prefix = torch.cumsum(
 
         freq,
 
@@ -516,25 +464,23 @@ def quantise_gpu(probs):
 
 
 
+    zeros = torch.zeros(
+
+        freq.shape[0],
+
+        1,
+
+        dtype=freq.dtype,
+
+        device=freq.device,
+
+    )
+
+
+
     cum = torch.cat(
 
-        (
-
-            torch.zeros(
-
-                freq.shape[0],
-
-                1,
-
-                dtype=torch.int64,
-
-                device=DEVICE,
-
-            ),
-
-            cum,
-
-        ),
+        (zeros, prefix),
 
         dim=1,
 
@@ -543,11 +489,6 @@ def quantise_gpu(probs):
 
 
     return freq, cum
-
-
-
-
-
 # ------------------------------------------------------------
 
 # Forward pass for encoder:
@@ -932,6 +873,316 @@ print("rANS quality bpc:", f"{rans_bpc:.4f}")
 
 # ------------------------------------------------------------
 
+
+
+# ------------------------------------------------------------
+
+# Fused fast-quantisation + rANS decode kernel.
+
+#
+
+# One Triton program handles one read.
+
+# Input probabilities are produced by the existing eager GRU,
+
+# preserving the known encoder/decoder FP32 model path.
+
+# ------------------------------------------------------------
+
+
+
+@triton.jit
+
+def fused_entropy_decode_kernel(
+
+    probs_ptr,
+
+    dx_ptr,
+
+    dptr_ptr,
+
+    streams_ptr,
+
+    symbols_ptr,
+
+    MAX_BYTES: tl.constexpr,
+
+    V: tl.constexpr,
+
+    BLOCK: tl.constexpr,
+
+):
+
+    row = tl.program_id(0)
+
+
+
+    offs = tl.arange(0, BLOCK)
+
+    mask = offs < V
+
+
+
+    probs = tl.load(
+
+        probs_ptr + row * V + offs,
+
+        mask=mask,
+
+        other=0.0,
+
+    )
+
+
+
+    # M = 65536.
+
+    # Probabilities are nonnegative, so float->int truncation
+
+    # is equivalent to floor for this operation.
+
+    scaled = probs * 65536.0
+
+
+
+    freq = scaled.to(tl.int32)
+
+
+
+    freq = tl.where(
+
+        mask,
+
+        tl.maximum(freq, 1),
+
+        0,
+
+    )
+
+
+
+    total = tl.sum(freq, axis=0)
+
+    delta = 65536 - total
+
+
+
+    # Same fast-quant rule as the eager encoder:
+
+    # apply residual to largest-frequency symbol.
+
+    biggest = tl.argmax(
+
+        freq,
+
+        axis=0,
+
+    )
+
+
+
+    freq = freq + tl.where(
+
+        offs == biggest,
+
+        delta,
+
+        0,
+
+    )
+
+
+
+    # Inclusive end of each symbol interval.
+
+    prefix = tl.cumsum(
+
+        freq,
+
+        axis=0,
+
+    )
+
+
+
+    # Beginning of each symbol interval.
+
+    start = prefix - freq
+
+
+
+    dx = tl.load(
+
+        dx_ptr + row
+
+    ).to(tl.int64)
+
+
+
+    dptr = tl.load(
+
+        dptr_ptr + row
+
+    ).to(tl.int64)
+
+
+
+    slot = dx & 65535
+
+
+
+    contains = (
+
+        mask
+
+        & (start <= slot)
+
+        & (slot < prefix)
+
+    )
+
+
+
+    symbol = tl.argmax(
+
+        contains.to(tl.int32),
+
+        axis=0,
+
+    )
+
+
+
+    fs = tl.sum(
+
+        tl.where(
+
+            offs == symbol,
+
+            freq,
+
+            0,
+
+        ),
+
+        axis=0,
+
+    ).to(tl.int64)
+
+
+
+    cs = tl.sum(
+
+        tl.where(
+
+            offs == symbol,
+
+            start,
+
+            0,
+
+        ),
+
+        axis=0,
+
+    ).to(tl.int64)
+
+
+
+    # rANS state transition.
+
+    dx = (
+
+        fs * (dx >> 16)
+
+        + slot
+
+        - cs
+
+    )
+
+
+
+    # Renormalize.
+
+    for _ in range(4):
+
+
+
+        need = dx < 8388608
+
+
+
+        safe_ptr = tl.minimum(
+
+            tl.maximum(dptr, 0),
+
+            MAX_BYTES - 1,
+
+        )
+
+
+
+        byte = tl.load(
+
+            streams_ptr
+
+            + row * MAX_BYTES
+
+            + safe_ptr
+
+        ).to(tl.int64)
+
+
+
+        dx = tl.where(
+
+            need,
+
+            (dx << 8) | byte,
+
+            dx,
+
+        )
+
+
+
+        dptr = dptr + need.to(tl.int64)
+
+
+
+    tl.store(
+
+        dx_ptr + row,
+
+        dx,
+
+    )
+
+
+
+    tl.store(
+
+        dptr_ptr + row,
+
+        dptr,
+
+    )
+
+
+
+    tl.store(
+
+        symbols_ptr + row,
+
+        symbol,
+
+    )
+
+
+
+
+
 # FULL GPU DECODE
 
 #
@@ -1020,9 +1271,27 @@ start_event.record()
 
 
 
+symbol_buffer = torch.empty(
+
+    BATCH,
+
+    dtype=torch.int64,
+
+    device=DEVICE,
+
+)
+
+
+
+grid = (BATCH,)
+
+
+
 for t in range(SEQ_LEN - 1):
 
 
+
+    # Keep the known-correct eager GRU path unchanged.
 
     h, probs = model_step(
 
@@ -1038,113 +1307,31 @@ for t in range(SEQ_LEN - 1):
 
 
 
-    freq, cum = quantise_gpu(probs)
+    # Everything after probabilities is one kernel.
 
+    fused_entropy_decode_kernel[grid](
 
+        probs,
 
-    slot = dx & (M - 1)
+        dx,
 
+        dptr,
 
+        streams,
 
-    # Find symbol whose cumulative range contains slot.
+        symbol_buffer,
 
-    symbol = (
+        MAX_BYTES=MAX_BYTES,
 
-        cum[:, 1:]
+        V=V,
 
-        <= slot.unsqueeze(1)
-
-    ).sum(dim=1)
-
-
-
-    fs = freq.gather(
-
-        1,
-
-        symbol.unsqueeze(1),
-
-    ).squeeze(1)
-
-
-
-    cs = cum.gather(
-
-        1,
-
-        symbol.unsqueeze(1),
-
-    ).squeeze(1)
-
-
-
-    dx = (
-
-        fs * (dx >> PROB_BITS)
-
-        + slot
-
-        - cs
+        BLOCK=64,
 
     )
 
 
 
-    # rANS renormalisation.
-
-    for _ in range(4):
-
-
-
-        need = dx < LOWER
-
-
-
-        safe_ptr = torch.clamp(
-
-            dptr,
-
-            min=0,
-
-            max=MAX_BYTES - 1,
-
-        )
-
-
-
-        byte = streams[
-
-            rows,
-
-            safe_ptr,
-
-        ].to(torch.int64)
-
-
-
-        dx = torch.where(
-
-            need,
-
-            (dx << 8) | byte,
-
-            dx,
-
-        )
-
-
-
-        dptr = (
-
-            dptr
-
-            + need.to(torch.int64)
-
-        )
-
-
-
-    decoded[:, t + 1] = symbol
+    decoded[:, t + 1] = symbol_buffer
 
 
 
