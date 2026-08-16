@@ -1,0 +1,56 @@
+===== MACHINE =====
+phoenix-20.prism
+Model name:                      AMD EPYC 7662 64-Core Processor
+Flags:                           fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl nonstop_tsc cpuid extd_apicid aperfmperf rapl pni pclmulqdq monitor ssse3 fma cx16 sse4_1 sse4_2 x2apic movbe popcnt aes xsave avx f16c rdrand lahf_lm cmp_legacy svm extapic cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw ibs skinit wdt tce topoext perfctr_core perfctr_nb bpext perfctr_llc mwaitx cpb cat_l3 cdp_l3 hw_pstate ssbd mba ibrs ibpb stibp vmmcall fsgsbase bmi1 avx2 smep bmi2 cqm rdt_a rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves cqm_llc cqm_occup_llc cqm_mbm_total cqm_mbm_local clzero irperf xsaveerptr rdpru wbnoinvd amd_ppin arat npt lbrv svm_lock nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold avic v_vmsave_vmload vgif v_spec_ctrl umip rdpid overflow_recov succor smca sme sev sev_es
+QUALITY_SYMBOLS=180505044
+========================================
+BINARY=qualgru_o2_sse42
+========================================
+/tmp/qgru_isa_36790743/input.fastq -> /tmp/qgru_isa_36790743/qualgru_o2_sse42.qgru
+  model      h64
+  reads      10000  (180505044 symbols, 1 chunks)
+  (includes sequences + tables) total      123716513 bytes  (5.4831 bits/symbol overall)
+  122.9s  (1469134 symbols/sec)
+COMPRESS wall=123.10 user=1820.20 sys=12.09 cpu=1488%
+archive_bytes=123716513
+/tmp/qgru_isa_36790743/qualgru_o2_sse42.qgru -> /tmp/qgru_isa_36790743/qualgru_o2_sse42.fastq
+  model      h64
+  reads      10000  (180505044 symbols, 1 chunks)
+  checksum   OK
+  27.5s  (6570134 symbols/sec)
+DECOMPRESS wall=28.00 user=1638.30 sys=2.80 cpu=5859%
+SAME_BUILD_ROUNDTRIP=PASS
+========================================
+BINARY=qualgru_o3_sse42
+========================================
+/tmp/qgru_isa_36790743/input.fastq -> /tmp/qgru_isa_36790743/qualgru_o3_sse42.qgru
+  model      h64
+  reads      10000  (180505044 symbols, 1 chunks)
+  (includes sequences + tables) total      123716513 bytes  (5.4831 bits/symbol overall)
+  118.8s  (1519078 symbols/sec)
+COMPRESS wall=119.03 user=1702.32 sys=10.72 cpu=1439%
+archive_bytes=123716513
+/tmp/qgru_isa_36790743/qualgru_o3_sse42.qgru -> /tmp/qgru_isa_36790743/qualgru_o3_sse42.fastq
+  model      h64
+  reads      10000  (180505044 symbols, 1 chunks)
+  checksum   OK
+  26.8s  (6747438 symbols/sec)
+DECOMPRESS wall=27.39 user=1591.40 sys=3.93 cpu=5822%
+SAME_BUILD_ROUNDTRIP=PASS
+========================================
+BINARY=qualgru_o3_avx2
+========================================
+/tmp/qgru_isa_36790743/input.fastq -> /tmp/qgru_isa_36790743/qualgru_o3_avx2.qgru
+  model      h64
+  reads      10000  (180505044 symbols, 1 chunks)
+  (includes sequences + tables) total      123716512 bytes  (5.4831 bits/symbol overall)
+  112.8s  (1600242 symbols/sec)
+COMPRESS wall=113.02 user=1327.87 sys=11.04 cpu=1184%
+archive_bytes=123716512
+/tmp/qgru_isa_36790743/qualgru_o3_avx2.qgru -> /tmp/qgru_isa_36790743/qualgru_o3_avx2.fastq
+  model      h64
+  reads      10000  (180505044 symbols, 1 chunks)
+  checksum   OK
+  20.4s  (8853009 symbols/sec)
+DECOMPRESS wall=20.80 user=1177.55 sys=2.69 cpu=5671%
+SAME_BUILD_ROUNDTRIP=PASS

@@ -1,0 +1,13 @@
+cp: cannot stat '/private/home/vtejomur/compression/qualgru_profile_1k.fastq': No such file or directory
+cannot open /tmp/qgru_compat_36790744/input.fastq
+cannot open /tmp/qgru_compat_36790744/input.fastq
+cannot open /tmp/qgru_compat_36790744/input.fastq
+ENC=qualgru_o2_sse42 DEC=qualgru_o2_sse42 RESULT=FAIL exit=1
+ENC=qualgru_o2_sse42 DEC=qualgru_o3_sse42 RESULT=FAIL exit=1
+ENC=qualgru_o2_sse42 DEC=qualgru_o3_avx2 RESULT=FAIL exit=1
+ENC=qualgru_o3_sse42 DEC=qualgru_o2_sse42 RESULT=FAIL exit=1
+ENC=qualgru_o3_sse42 DEC=qualgru_o3_sse42 RESULT=FAIL exit=1
+ENC=qualgru_o3_sse42 DEC=qualgru_o3_avx2 RESULT=FAIL exit=1
+ENC=qualgru_o3_avx2 DEC=qualgru_o2_sse42 RESULT=FAIL exit=1
+ENC=qualgru_o3_avx2 DEC=qualgru_o3_sse42 RESULT=FAIL exit=1
+ENC=qualgru_o3_avx2 DEC=qualgru_o3_avx2 RESULT=FAIL exit=1

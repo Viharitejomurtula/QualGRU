@@ -1,3 +1,6 @@
 /build/
 /compressor/qualgru
 __pycache__/
+compressor/qualgru_o2_sse42
+compressor/qualgru_o3_sse42
+compressor/qualgru_o3_avx2

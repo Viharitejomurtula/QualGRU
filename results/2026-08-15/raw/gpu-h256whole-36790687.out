@@ -1,0 +1,79 @@
+NVIDIA A100-SXM4-80GB, 81920 MiB, 81156 MiB
+reading whole FASTQ...
+GPU: NVIDIA A100-SXM4-80GB
+SOURCE_READS: 186533
+CHUNKS: 527163
+QUALITY_SYMBOLS: 3471674698
+ENCODED_TRANSITIONS: 3471147535
+MAX_CHUNK_LENGTH: 8192
+CELL_BUDGET: 2000000000
+
+warming A100...
+warmup complete
+
+===== BATCH 1 ===== reads=131072 maxlen=8192 minlen=8192 transitions=1,073,610,752
+compact fs/cs pass: 27.170 M symbols/s
+rANS encode: 225.234 M symbols/s
+full compression: 24.245 M symbols/s
+full decode: 25.006 M symbols/s
+mismatches: 0 unconsumed: 0
+
+===== BATCH 2 ===== reads=131072 maxlen=8192 minlen=8192 transitions=1,073,610,752
+compact fs/cs pass: 27.167 M symbols/s
+rANS encode: 226.599 M symbols/s
+full compression: 24.259 M symbols/s
+full decode: 25.015 M symbols/s
+mismatches: 0 unconsumed: 0
+
+===== BATCH 3 ===== reads=131072 maxlen=8192 minlen=5392 transitions=997,067,055
+compact fs/cs pass: 27.032 M symbols/s
+rANS encode: 206.606 M symbols/s
+full compression: 23.904 M symbols/s
+full decode: 24.813 M symbols/s
+mismatches: 0 unconsumed: 0
+
+===== BATCH 4 ===== reads=131072 maxlen=5392 minlen=164 transitions=326,624,556
+compact fs/cs pass: 25.456 M symbols/s
+rANS encode: 101.739 M symbols/s
+full compression: 20.361 M symbols/s
+full decode: 22.379 M symbols/s
+mismatches: 0 unconsumed: 0
+
+===== BATCH 5 ===== reads=2875 maxlen=164 minlen=1 transitions=234,420
+compact fs/cs pass: 2.353 M symbols/s
+rANS encode: 2.414 M symbols/s
+full compression: 1.191 M symbols/s
+full decode: 1.291 M symbols/s
+mismatches: 0 unconsumed: 0
+
+
+========================================
+WHOLE-FILE QUALGRU GPU RESULT
+========================================
+reads: 527163
+quality symbols: 3471674698
+encoded transitions: 3471147535
+batches: 5
+
+===== FULL GPU COMPRESSION =====
+seconds: 146.487
+throughput: 23.696 M symbols/s
+TARGET_50M: FAIL
+
+===== FULL GPU DECOMPRESSION =====
+seconds: 140.813
+throughput: 24.651 M symbols/s
+TARGET_50M: FAIL
+
+payload bytes: 1574070153
+final-state bytes: 2108652
+chunk-seed bytes: 527163
+stream-length bytes: 2108652
+payload bpc: 3.6272
+codec-required quality bpc: 3.6333
+self-contained archive bpc: 3.6382
+mismatched symbols: 0
+streams not fully consumed: 0
+GPU_RANS_ROUNDTRIP: PASS
+
+whole processing wall: 312.546 s

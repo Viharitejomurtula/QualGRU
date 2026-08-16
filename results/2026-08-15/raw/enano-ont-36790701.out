@@ -1,0 +1,71 @@
+===== INPUT =====
+bytes=6951183782
+===== COMPRESS =====
+Parameters - k: 7, l: 6, b: 32 
+Starting encoding in FAST MODE with 8 threads... 
+Starting adaptative encoding for 33 (32 + 1) blocks, and update every 4 blocks... 
+Starting parallelized fast encoding...
+Total encoded blocks: 698 
+Stream <original size in bytes> -> <compressed size in bytes> (<compression ratio>)
+IDs   6715188 -> 3052678 (0.455)
+Bases 3471674698 -> 822945873 (0.237)
+Quals 3471674698 -> 1900608182 (0.547)
+Total 6951183782 -> 2726990226 (0.392)
+Total compression time: 35.81 s
+	Command being timed: "/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/enano/enano -t 8 /private/home/vtejomur/compression/compressor_ont/CoLoRd/chr20_slice.fastq /private/home/vtejomur/compression/bench_results/chr20.enano"
+	User time (seconds): 206.36
+	System time (seconds): 3.21
+	Percent of CPU this job got: 495%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:42.31
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 214284
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 2
+	Minor (reclaiming a frame) page faults: 312683
+	Voluntary context switches: 58665
+	Involuntary context switches: 216
+	Swaps: 0
+	File system inputs: 2198592
+	File system outputs: 5326176
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+===== COMPRESSED =====
+bytes=2726990226
+===== DECOMPRESS =====
+Parameters - k: 7, l: 6, b: 32 
+Starting decoding with 8 threads... 
+Starting decoding with context model update... 
+Starting parallelized fast decoding... 
+Total decoded blocks: 698
+Total decompression time: 65.03 s
+	Command being timed: "/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/enano/enano -d -t 8 /private/home/vtejomur/compression/bench_results/chr20.enano /private/home/vtejomur/compression/bench_results/chr20.enano.dec.fastq"
+	User time (seconds): 343.78
+	System time (seconds): 4.59
+	Percent of CPU this job got: 463%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:15.12
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 228648
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 1
+	Minor (reclaiming a frame) page faults: 418285
+	Voluntary context switches: 93929
+	Involuntary context switches: 521
+	Swaps: 0
+	File system inputs: 5326160
+	File system outputs: 13589664
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+===== VERIFY =====
+/private/home/vtejomur/compression/compressor_ont/CoLoRd/chr20_slice.fastq /private/home/vtejomur/compression/bench_results/chr20.enano.dec.fastq differ: byte 5828, line 3

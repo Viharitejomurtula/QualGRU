@@ -1,0 +1,17 @@
+model=h64 threads=64 quality_symbols=180505044
+phoenix-07.prism
+Model name:                      AMD EPYC 7662 64-Core Processor
+/tmp/qgru_h64_64_36790715_0/input.fastq -> /tmp/qgru_h64_64_36790715_0/out.qgru
+  model      h64
+  reads      10000  (180505044 symbols, 1 chunks)
+  (includes sequences + tables) total      123716513 bytes  (5.4831 bits/symbol overall)
+  134.5s  (1341984 symbols/sec)
+COMPRESS wall=134.72 user=1841.68 sys=15.65 maxrss_kb=3423332
+archive_bytes=123716513
+/tmp/qgru_h64_64_36790715_0/out.qgru -> /tmp/qgru_h64_64_36790715_0/decoded.fastq
+  model      h64
+  reads      10000  (180505044 symbols, 1 chunks)
+  checksum   OK
+  28.0s  (6456685 symbols/sec)
+DECOMPRESS wall=28.49 user=1688.05 sys=1.15 maxrss_kb=722984
+ROUNDTRIP=PASS

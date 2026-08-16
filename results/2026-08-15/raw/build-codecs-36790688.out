@@ -1,0 +1,674 @@
+===== fqzcomp5 =====
+Cloning into 'fqzcomp5'...
+Submodule 'htscodecs' (https://github.com/jkbonfield/htscodecs.git) registered for path 'htscodecs'
+Cloning into '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs'...
+Submodule path 'htscodecs': checked out '0cdeea8fecf47a2c9d3ece0039b241d3cb4681b6'
+cd htscodecs; autoreconf -i; ./configure --disable-shared; make
+cc -g -O3 -Ihtscodecs -c fqzcomp5.c
+cc -g -O3 -Ihtscodecs -c lzp16e.c
+cc -g -O3 -Ihtscodecs -c thread_pool.c
+libtoolize: putting auxiliary files in '.'.
+libtoolize: copying file './ltmain.sh'
+libtoolize: putting macros in AC_CONFIG_MACRO_DIRS, 'm4'.
+libtoolize: copying file 'm4/libtool.m4'
+libtoolize: copying file 'm4/ltoptions.m4'
+libtoolize: copying file 'm4/ltsugar.m4'
+libtoolize: copying file 'm4/ltversion.m4'
+libtoolize: copying file 'm4/lt~obsolete.m4'
+configure.ac:71: installing './compile'
+configure.ac:73: installing './config.guess'
+configure.ac:73: installing './config.sub'
+configure.ac:10: installing './install-sh'
+configure.ac:10: installing './missing'
+htscodecs/Makefile.am: installing './depcomp'
+parallel-tests: installing './test-driver'
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
+checking for a race-free mkdir -p... /usr/bin/mkdir -p
+checking for gawk... gawk
+checking whether make sets $(MAKE)... yes
+checking whether make supports nested variables... yes
+checking whether to enable maintainer-specific portions of Makefiles... no
+checking for gcc... gcc
+checking whether the C compiler works... yes
+checking for C compiler default output file name... a.out
+checking for suffix of executables... 
+checking whether we are cross compiling... no
+checking for suffix of object files... o
+checking whether the compiler supports GNU C... yes
+checking whether gcc accepts -g... yes
+checking for gcc option to enable C11 features... none needed
+checking whether gcc understands -c and -o together... yes
+checking whether make supports the include directive... yes (GNU style)
+checking dependency style of gcc... gcc3
+checking build system type... x86_64-pc-linux-gnu
+checking host system type... x86_64-pc-linux-gnu
+checking how to print strings... printf
+checking for a sed that does not truncate output... /usr/bin/sed
+checking for grep that handles long lines and -e... /usr/bin/grep
+checking for egrep... /usr/bin/grep -E
+checking for fgrep... /usr/bin/grep -F
+checking for ld used by gcc... /usr/bin/ld
+checking if the linker (/usr/bin/ld) is GNU ld... yes
+checking for BSD- or MS-compatible name lister (nm)... /usr/bin/nm -B
+checking the name lister (/usr/bin/nm -B) interface... BSD nm
+checking whether ln -s works... yes
+checking the maximum length of command line arguments... 1572864
+checking how to convert x86_64-pc-linux-gnu file names to x86_64-pc-linux-gnu format... func_convert_file_noop
+checking how to convert x86_64-pc-linux-gnu file names to toolchain format... func_convert_file_noop
+checking for /usr/bin/ld option to reload object files... -r
+checking for objdump... objdump
+checking how to recognize dependent libraries... pass_all
+checking for dlltool... no
+checking how to associate runtime and link libraries... printf %s\n
+checking for ar... ar
+checking for archiver @FILE support... @
+checking for strip... strip
+checking for ranlib... ranlib
+checking command to parse /usr/bin/nm -B output from gcc object... ok
+checking for sysroot... no
+checking for a working dd... /usr/bin/dd
+checking how to truncate binary pipes... /usr/bin/dd bs=4096 count=1
+checking for mt... mt
+checking if mt is a manifest tool... no
+checking for stdio.h... yes
+checking for stdlib.h... yes
+checking for string.h... yes
+checking for inttypes.h... yes
+checking for stdint.h... yes
+checking for strings.h... yes
+checking for sys/stat.h... yes
+checking for sys/types.h... yes
+checking for unistd.h... yes
+checking for dlfcn.h... yes
+checking for objdir... .libs
+checking if gcc supports -fno-rtti -fno-exceptions... no
+checking for gcc option to produce PIC... -fPIC -DPIC
+checking if gcc PIC flag -fPIC -DPIC works... yes
+checking if gcc static flag -static works... yes
+checking if gcc supports -c -o file.o... yes
+checking if gcc supports -c -o file.o... (cached) yes
+checking whether the gcc linker (/usr/bin/ld -m elf_x86_64) supports shared libraries... yes
+checking dynamic linker characteristics... GNU/Linux ld.so
+checking how to hardcode library paths into programs... immediate
+checking whether stripping libraries is possible... yes
+checking if libtool supports shared libraries... yes
+checking whether to build shared libraries... no
+checking whether to build static libraries... yes
+checking for grep that handles long lines and -e... (cached) /usr/bin/grep
+checking for C compiler warning flags... -Wall
+checking for inflateEnd in -lz... yes
+checking for zlib.h... yes
+checking for BZ2_bzBuffToBuffCompress in -lbz2... yes
+checking whether C compiler accepts -mssse3... yes
+checking whether C compiler accepts -mpopcnt... yes
+checking whether C compiler accepts -msse4.1... yes
+checking whether C compiler accepts -mavx2... yes
+checking whether C compiler accepts -mavx512f... yes
+checking whether C compiler supports ARM Neon... no
+checking for sys/wait.h that is POSIX.1 compatible... yes
+checking for fcntl.h... yes
+checking for limits.h... yes
+checking for unistd.h... (cached) yes
+checking for malloc.h... yes
+checking for zlib.h... (cached) yes
+checking for library containing pthread_join... none required
+checking that generated files are newer than configure... done
+configure: creating ./config.status
+config.status: creating Makefile
+config.status: creating htscodecs/Makefile
+config.status: creating tests/Makefile
+config.status: creating config.h
+config.status: executing depfiles commands
+config.status: executing libtool commands
+make[1]: Entering directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs'
+make  all-recursive
+make[2]: Entering directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs'
+Making all in htscodecs
+make[3]: Entering directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/htscodecs'
+Update version.h: #define HTSCODECS_VERSION_TEXT "1.2.2-45-g0cdeea8"
+make  all-am
+make[4]: Entering directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/htscodecs'
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT pack.lo -MD -MP -MF .deps/pack.Tpo -c -o pack.lo pack.c
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT rle.lo -MD -MP -MF .deps/rle.Tpo -c -o rle.lo rle.c
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT fqzcomp_qual.lo -MD -MP -MF .deps/fqzcomp_qual.Tpo -c -o fqzcomp_qual.lo fqzcomp_qual.c
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT rANS_static.lo -MD -MP -MF .deps/rANS_static.Tpo -c -o rANS_static.lo rANS_static.c
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT rANS_static4x16pr.lo -MD -MP -MF .deps/rANS_static4x16pr.Tpo -c -o rANS_static4x16pr.lo rANS_static4x16pr.c
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT rANS_static32x16pr.lo -MD -MP -MF .deps/rANS_static32x16pr.Tpo -c -o rANS_static32x16pr.lo rANS_static32x16pr.c
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT tokenise_name3.lo -MD -MP -MF .deps/tokenise_name3.Tpo -c -o tokenise_name3.lo tokenise_name3.c
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT arith_dynamic.lo -MD -MP -MF .deps/arith_dynamic.Tpo -c -o arith_dynamic.lo arith_dynamic.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT tokenise_name3.lo -MD -MP -MF .deps/tokenise_name3.Tpo -c tokenise_name3.c -o tokenise_name3.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT fqzcomp_qual.lo -MD -MP -MF .deps/fqzcomp_qual.Tpo -c fqzcomp_qual.c -o fqzcomp_qual.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT rANS_static32x16pr.lo -MD -MP -MF .deps/rANS_static32x16pr.Tpo -c rANS_static32x16pr.c -o rANS_static32x16pr.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT arith_dynamic.lo -MD -MP -MF .deps/arith_dynamic.Tpo -c arith_dynamic.c -o arith_dynamic.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT pack.lo -MD -MP -MF .deps/pack.Tpo -c pack.c -o pack.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT rANS_static4x16pr.lo -MD -MP -MF .deps/rANS_static4x16pr.Tpo -c rANS_static4x16pr.c -o rANS_static4x16pr.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT rANS_static.lo -MD -MP -MF .deps/rANS_static.Tpo -c rANS_static.c -o rANS_static.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT rle.lo -MD -MP -MF .deps/rle.Tpo -c rle.c -o rle.o
+mv -f .deps/rle.Tpo .deps/rle.Plo
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT htscodecs.lo -MD -MP -MF .deps/htscodecs.Tpo -c -o htscodecs.lo htscodecs.c
+mv -f .deps/pack.Tpo .deps/pack.Plo
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..     -Wall -g -O3 -MT utils.lo -MD -MP -MF .deps/utils.Tpo -c -o utils.lo utils.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT htscodecs.lo -MD -MP -MF .deps/htscodecs.Tpo -c htscodecs.c -o htscodecs.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -Wall -g -O3 -MT utils.lo -MD -MP -MF .deps/utils.Tpo -c utils.c -o utils.o
+mv -f .deps/htscodecs.Tpo .deps/htscodecs.Plo
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..    -msse4.1 -mssse3 -mpopcnt -Wall -g -O3 -MT librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.lo -MD -MP -MF .deps/librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.Tpo -c -o librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.lo `test -f 'rANS_static32x16pr_sse4.c' || echo './'`rANS_static32x16pr_sse4.c
+mv -f .deps/rANS_static.Tpo .deps/rANS_static.Plo
+mv -f .deps/utils.Tpo .deps/utils.Plo
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..    -mavx2 -Wall -g -O3 -MT librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.lo -MD -MP -MF .deps/librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.Tpo -c -o librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.lo `test -f 'rANS_static32x16pr_avx2.c' || echo './'`rANS_static32x16pr_avx2.c
+/bin/bash ../libtool  --tag=CC   --mode=compile gcc -DHAVE_CONFIG_H -I. -I..    -mavx512f -Wall -g -O3 -MT librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.lo -MD -MP -MF .deps/librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.Tpo -c -o librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.lo `test -f 'rANS_static32x16pr_avx512.c' || echo './'`rANS_static32x16pr_avx512.c
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -mavx2 -Wall -g -O3 -MT librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.lo -MD -MP -MF .deps/librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.Tpo -c rANS_static32x16pr_avx2.c -o librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -msse4.1 -mssse3 -mpopcnt -Wall -g -O3 -MT librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.lo -MD -MP -MF .deps/librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.Tpo -c rANS_static32x16pr_sse4.c -o librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.o
+libtool: compile:  gcc -DHAVE_CONFIG_H -I. -I.. -mavx512f -Wall -g -O3 -MT librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.lo -MD -MP -MF .deps/librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.Tpo -c rANS_static32x16pr_avx512.c -o librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.o
+mv -f .deps/tokenise_name3.Tpo .deps/tokenise_name3.Plo
+mv -f .deps/rANS_static32x16pr.Tpo .deps/rANS_static32x16pr.Plo
+mv -f .deps/fqzcomp_qual.Tpo .deps/fqzcomp_qual.Plo
+mv -f .deps/arith_dynamic.Tpo .deps/arith_dynamic.Plo
+mv -f .deps/rANS_static4x16pr.Tpo .deps/rANS_static4x16pr.Plo
+mv -f .deps/librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.Tpo .deps/librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.Plo
+/bin/bash ../libtool  --tag=CC   --mode=link gcc -msse4.1 -mssse3 -mpopcnt -Wall -g -O3   -o librANS_static32x16pr_sse4.la  librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.lo  -lbz2 
+libtool: link: ar cr .libs/librANS_static32x16pr_sse4.a  librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.o
+libtool: link: ranlib .libs/librANS_static32x16pr_sse4.a
+libtool: link: ( cd ".libs" && rm -f "librANS_static32x16pr_sse4.la" && ln -s "../librANS_static32x16pr_sse4.la" "librANS_static32x16pr_sse4.la" )
+mv -f .deps/librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.Tpo .deps/librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.Plo
+/bin/bash ../libtool  --tag=CC   --mode=link gcc -mavx512f -Wall -g -O3   -o librANS_static32x16pr_avx512.la  librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.lo  -lbz2 
+libtool: link: ar cr .libs/librANS_static32x16pr_avx512.a  librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.o
+libtool: link: ranlib .libs/librANS_static32x16pr_avx512.a
+libtool: link: ( cd ".libs" && rm -f "librANS_static32x16pr_avx512.la" && ln -s "../librANS_static32x16pr_avx512.la" "librANS_static32x16pr_avx512.la" )
+mv -f .deps/librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.Tpo .deps/librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.Plo
+/bin/bash ../libtool  --tag=CC   --mode=link gcc -mavx2 -Wall -g -O3   -o librANS_static32x16pr_avx2.la  librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.lo  -lbz2 
+libtool: link: ar cr .libs/librANS_static32x16pr_avx2.a  librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.o
+libtool: link: ranlib .libs/librANS_static32x16pr_avx2.a
+libtool: link: ( cd ".libs" && rm -f "librANS_static32x16pr_avx2.la" && ln -s "../librANS_static32x16pr_avx2.la" "librANS_static32x16pr_avx2.la" )
+/bin/bash ../libtool  --tag=CC   --mode=link gcc  -Wall -g -O3 -version-info 2:6:0   -o libhtscodecs.la -rpath /usr/local/lib pack.lo rle.lo fqzcomp_qual.lo rANS_static.lo rANS_static4x16pr.lo rANS_static32x16pr.lo tokenise_name3.lo arith_dynamic.lo htscodecs.lo utils.lo  librANS_static32x16pr_sse4.la librANS_static32x16pr_avx2.la librANS_static32x16pr_avx512.la -lz -lm -lbz2 
+libtool: link: (cd .libs/libhtscodecs.lax/librANS_static32x16pr_sse4.a && ar x "/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/htscodecs/./.libs/librANS_static32x16pr_sse4.a")
+libtool: link: (cd .libs/libhtscodecs.lax/librANS_static32x16pr_avx2.a && ar x "/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/htscodecs/./.libs/librANS_static32x16pr_avx2.a")
+libtool: link: (cd .libs/libhtscodecs.lax/librANS_static32x16pr_avx512.a && ar x "/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/htscodecs/./.libs/librANS_static32x16pr_avx512.a")
+libtool: link: ar cr .libs/libhtscodecs.a  pack.o rle.o fqzcomp_qual.o rANS_static.o rANS_static4x16pr.o rANS_static32x16pr.o tokenise_name3.o arith_dynamic.o htscodecs.o utils.o  .libs/libhtscodecs.lax/librANS_static32x16pr_sse4.a/librANS_static32x16pr_sse4_la-rANS_static32x16pr_sse4.o  .libs/libhtscodecs.lax/librANS_static32x16pr_avx2.a/librANS_static32x16pr_avx2_la-rANS_static32x16pr_avx2.o  .libs/libhtscodecs.lax/librANS_static32x16pr_avx512.a/librANS_static32x16pr_avx512_la-rANS_static32x16pr_avx512.o 
+libtool: link: ranlib .libs/libhtscodecs.a
+libtool: link: rm -fr .libs/libhtscodecs.lax
+libtool: link: ( cd ".libs" && rm -f "libhtscodecs.la" && ln -s "../libhtscodecs.la" "libhtscodecs.la" )
+make[4]: Leaving directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/htscodecs'
+make[3]: Leaving directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/htscodecs'
+Making all in .
+make[3]: Entering directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs'
+make[3]: Leaving directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs'
+Making all in tests
+make[3]: Entering directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests'
+gcc -DHAVE_CONFIG_H -I. -I..  -I..   -Wall -g -O3 -MT rANS_static4x16pr_test.o -MD -MP -MF .deps/rANS_static4x16pr_test.Tpo -c -o rANS_static4x16pr_test.o rANS_static4x16pr_test.c
+gcc -DHAVE_CONFIG_H -I. -I..  -I..   -Wall -g -O3 -MT tokenise_name3_test.o -MD -MP -MF .deps/tokenise_name3_test.Tpo -c -o tokenise_name3_test.o tokenise_name3_test.c
+gcc -DHAVE_CONFIG_H -I. -I..  -I..   -Wall -g -O3 -MT arith_dynamic_test.o -MD -MP -MF .deps/arith_dynamic_test.Tpo -c -o arith_dynamic_test.o arith_dynamic_test.c
+gcc -DHAVE_CONFIG_H -I. -I..  -I..   -Wall -g -O3 -MT rANS_static_test.o -MD -MP -MF .deps/rANS_static_test.Tpo -c -o rANS_static_test.o rANS_static_test.c
+gcc -DHAVE_CONFIG_H -I. -I..  -I..   -Wall -g -O3 -MT fqzcomp_qual_test.o -MD -MP -MF .deps/fqzcomp_qual_test.Tpo -c -o fqzcomp_qual_test.o fqzcomp_qual_test.c
+gcc -DHAVE_CONFIG_H -I. -I..  -I..   -Wall -g -O3 -MT varint_test.o -MD -MP -MF .deps/varint_test.Tpo -c -o varint_test.o varint_test.c
+gcc -DHAVE_CONFIG_H -I. -I..  -I..   -Wall -g -O3 -MT entropy.o -MD -MP -MF .deps/entropy.Tpo -c -o entropy.o entropy.c
+mv -f .deps/tokenise_name3_test.Tpo .deps/tokenise_name3_test.Po
+mv -f .deps/entropy.Tpo .deps/entropy.Po
+/bin/bash ../libtool  --tag=CC   --mode=link gcc  -Wall -g -O3   -o tokenise_name3 tokenise_name3_test.o ../htscodecs/libhtscodecs.la -lbz2 
+/bin/bash ../libtool  --tag=CC   --mode=link gcc  -Wall -g -O3   -o entropy entropy.o ../htscodecs/libhtscodecs.la -lbz2 
+mv -f .deps/arith_dynamic_test.Tpo .deps/arith_dynamic_test.Po
+mv -f .deps/rANS_static4x16pr_test.Tpo .deps/rANS_static4x16pr_test.Po
+/bin/bash ../libtool  --tag=CC   --mode=link gcc  -Wall -g -O3   -o arith_dynamic arith_dynamic_test.o ../htscodecs/libhtscodecs.la -lbz2 
+/bin/bash ../libtool  --tag=CC   --mode=link gcc  -Wall -g -O3   -o rans4x16pr rANS_static4x16pr_test.o ../htscodecs/libhtscodecs.la -lbz2 
+mv -f .deps/rANS_static_test.Tpo .deps/rANS_static_test.Po
+/bin/bash ../libtool  --tag=CC   --mode=link gcc  -Wall -g -O3   -o rans4x8 rANS_static_test.o ../htscodecs/libhtscodecs.la -lbz2 
+libtool: link: gcc -Wall -g -O3 -o rans4x16pr rANS_static4x16pr_test.o  ../htscodecs/.libs/libhtscodecs.a -lz -lm -lbz2
+libtool: link: gcc -Wall -g -O3 -o tokenise_name3 tokenise_name3_test.o  ../htscodecs/.libs/libhtscodecs.a -lz -lm -lbz2
+libtool: link: gcc -Wall -g -O3 -o rans4x8 rANS_static_test.o  ../htscodecs/.libs/libhtscodecs.a -lz -lm -lbz2
+libtool: link: gcc -Wall -g -O3 -o arith_dynamic arith_dynamic_test.o  ../htscodecs/.libs/libhtscodecs.a -lz -lm -lbz2
+libtool: link: gcc -Wall -g -O3 -o entropy entropy.o  ../htscodecs/.libs/libhtscodecs.a -lz -lm -lbz2
+mv -f .deps/fqzcomp_qual_test.Tpo .deps/fqzcomp_qual_test.Po
+/bin/bash ../libtool  --tag=CC   --mode=link gcc  -Wall -g -O3   -o fqzcomp_qual fqzcomp_qual_test.o ../htscodecs/libhtscodecs.la -lbz2 
+libtool: link: gcc -Wall -g -O3 -o fqzcomp_qual fqzcomp_qual_test.o  ../htscodecs/.libs/libhtscodecs.a -lz -lm -lbz2
+mv -f .deps/varint_test.Tpo .deps/varint_test.Po
+/bin/bash ../libtool  --tag=CC   --mode=link gcc  -Wall -g -O3   -o varint varint_test.o ../htscodecs/libhtscodecs.la -lbz2 
+libtool: link: gcc -Wall -g -O3 -o varint varint_test.o  ../htscodecs/.libs/libhtscodecs.a -lz -lm -lbz2
+make[3]: Leaving directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests'
+make[2]: Leaving directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs'
+make[1]: Leaving directory '/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs'
+cc  fqzcomp5.o lzp16e.o thread_pool.o -o fqzcomp5 -Lhtscodecs/htscodecs/.libs -lhtscodecs -pthread -lm -lbz2 -pthread
+===== ENANO =====
+Cloning into 'EnanoFASTQ'...
+g++ -fopenmp -std=c++11 -O3 -march=native -fomit-frame-pointer -fstrict-aliasing -ffast-math enano_fastq.cpp Compressor.cpp -o enano
+===== SPRING =====
+Cloning into 'SPRING'...
+Updating files:  27% (161/594)Updating files:  28% (167/594)Updating files:  29% (173/594)Updating files:  30% (179/594)Updating files:  31% (185/594)Updating files:  32% (191/594)Updating files:  33% (197/594)Updating files:  34% (202/594)Updating files:  35% (208/594)Updating files:  36% (214/594)Updating files:  37% (220/594)Updating files:  38% (226/594)Updating files:  39% (232/594)Updating files:  40% (238/594)Updating files:  41% (244/594)Updating files:  42% (250/594)Updating files:  43% (256/594)Updating files:  44% (262/594)Updating files:  45% (268/594)Updating files:  46% (274/594)Updating files:  47% (280/594)Updating files:  48% (286/594)Updating files:  49% (292/594)Updating files:  50% (297/594)Updating files:  51% (303/594)Updating files:  52% (309/594)Updating files:  53% (315/594)Updating files:  54% (321/594)Updating files:  55% (327/594)Updating files:  56% (333/594)Updating files:  57% (339/594)Updating files:  58% (345/594)Updating files:  59% (351/594)Updating files:  60% (357/594)Updating files:  61% (363/594)Updating files:  62% (369/594)Updating files:  63% (375/594)Updating files:  64% (381/594)Updating files:  65% (387/594)Updating files:  66% (393/594)Updating files:  67% (398/594)Updating files:  68% (404/594)Updating files:  69% (410/594)Updating files:  70% (416/594)Updating files:  71% (422/594)Updating files:  72% (428/594)Updating files:  73% (434/594)Updating files:  74% (440/594)Updating files:  75% (446/594)Updating files:  76% (452/594)Updating files:  77% (458/594)Updating files:  78% (464/594)Updating files:  79% (470/594)Updating files:  80% (476/594)Updating files:  81% (482/594)Updating files:  82% (488/594)Updating files:  83% (494/594)Updating files:  84% (499/594)Updating files:  85% (505/594)Updating files:  86% (511/594)Updating files:  87% (517/594)Updating files:  88% (523/594)Updating files:  89% (529/594)Updating files:  90% (535/594)Updating files:  91% (541/594)Updating files:  92% (547/594)Updating files:  93% (553/594)Updating files:  94% (559/594)Updating files:  95% (565/594)Updating files:  96% (571/594)Updating files:  97% (577/594)Updating files:  98% (583/594)Updating files:  99% (589/594)Updating files: 100% (594/594)Updating files: 100% (594/594), done.
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Detected compiler: GNU Compiler Collection
+-- Support for Interprocedural Optimization detected.
+-- Setting compiler flags
+-- Found OpenMP_C: -fopenmp (found version "4.5") 
+-- Found OpenMP_CXX: -fopenmp (found version "4.5") 
+-- Found OpenMP: TRUE (found version "4.5")  
+-- OPENMP FOUND
+-- ** CMAKE_CXX_FLAGS:  -g -O3 -march=native -fomit-frame-pointer -fstrict-aliasing -ffast-math -fopenmp
+-- ** CMAKE_C_FLAGS:  -g -O3 -march=native -fomit-frame-pointer -fstrict-aliasing -ffast-math -fopenmp
+-- Building zlib
+-- CMAKE_SOURCE_DIR: /private/home/vtejomur/compression/bench_tools/SPRING
+Checking for shared library support...
+Building shared library libz.so.1.2.8 with /usr/bin/cc.
+Checking for off64_t... Yes.
+Checking for fseeko... Yes.
+Checking for strerror... Yes.
+Checking for unistd.h... Yes.
+Checking for stdarg.h... Yes.
+Checking whether to use vs[n]printf() or s[n]printf()... using vs[n]printf().
+Checking for vsnprintf() in stdio.h... Yes.
+Checking for return value of vsnprintf()... Yes.
+Checking for attribute(visibility) support... Yes.
+Checking for SSE2 support ... Yes
+Checking for SSSE3 support ... Yes
+Checking for CRC and SSE4.2 support ... Yes
+Checking for PCLMUL support ... Yes
+rm -f *.o *.lo *~ \
+   example minigzip examplesh minigzipsh \
+   example64 minigzip64 \
+   infcover \
+   libz.* foo.gz so_locations \
+   _match.s maketree contrib/infback9/*.o
+rm -rf objs
+rm -f *.gcda *.gcno *.gcov
+rm -f contrib/infback9/*.gcda contrib/infback9/*.gcno contrib/infback9/*.gcov
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -I. -c -o example.o test/example.c
+test/example.c: In function ‘test_large_inflate’:
+test/example.c:365:48: warning: format ‘%lld’ expects argument of type ‘long long int’, but argument 3 has type ‘uLong’ {aka ‘long unsigned int’} [-Wformat=]
+  365 |         fprintf(stderr, "bad large inflate: %lld\n", d_stream.total_out);
+      |                                             ~~~^     ~~~~~~~~~~~~~~~~~~
+      |                                                |             |
+      |                                                long long int uLong {aka long unsigned int}
+      |                                             %ld
+test/example.c: In function ‘main’:
+test/example.c:562:60: warning: format ‘%llx’ expects argument of type ‘long long unsigned int’, but argument 4 has type ‘uLong’ {aka ‘long unsigned int’} [-Wformat=]
+  562 |     printf("zlib version %s = 0x%04x, compile flags = 0x%llx\n",
+      |                                                         ~~~^
+      |                                                            |
+      |                                                            long long unsigned int
+      |                                                         %lx
+  563 |             ZLIB_VERSION, ZLIB_VERNUM, zlibCompileFlags());
+      |                                        ~~~~~~~~~~~~~~~~~~   
+      |                                        |
+      |                                        uLong {aka long unsigned int}
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o adler32.o adler32.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o adler32_simd.o adler32_simd.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o crc32.o crc32.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o deflate.o deflate.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o infback.o infback.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o inffast.o inffast.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o inflate.o inflate.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o inftrees.o inftrees.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o trees.o trees.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o zutil.o zutil.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o inffast_chunk.o inffast_chunk.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o crc32_simd.o crc32_simd.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o compress.o compress.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o uncompr.o uncompr.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o gzclose.o gzclose.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o gzlib.o gzlib.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o gzread.o gzread.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN   -c -o gzwrite.o gzwrite.c
+ar rc libz.a adler32.o adler32_simd.o crc32.o deflate.o infback.o inffast.o inflate.o inftrees.o trees.o zutil.o inffast_chunk.o crc32_simd.o compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o 
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o example example.o -L. libz.a
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -I. -c -o minigzip.o test/minigzip.c
+/usr/bin/cc -DHAS_PCLMUL -mpclmul -DHAS_SSE42 -msse4.2 -DADLER32_SIMD_SSSE3 -mssse3 -DINFLATE_CHUNK_SIMD_SSE2 -msse2 -DINFLATE_CHUNK_READ_64LE -O3  -D_LARGEFILE64_SOURCE=1 -DHAVE_HIDDEN -o minigzip minigzip.o -L. libz.a
+CMake Warning (dev) at boost-cmake/CMakeLists.txt:7 (set):
+  implicitly converting 'DIRECTORY' to 'STRING' type.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Using local directory to search for boost archive: /private/home/vtejomur/compression/bench_tools/SPRING/boost-cmake
+-- Extracting Boost archive...
+-- Boost found: 1.67.0 /private/home/vtejomur/compression/bench_tools/SPRING/boost-cmake/boost/boost_1_67_0
+-- Boost found: 1.67.0 /private/home/vtejomur/compression/bench_tools/SPRING/boost-cmake/boost/boost_1_67_0
+-- Looking for __linux__
+-- Looking for __linux__ - found
+-- Looking for _WIN32
+-- Looking for _WIN32 - not found
+-- Looking for __APPLE__
+-- Looking for __APPLE__ - not found
+-- Looking for __ANDROID__
+-- Looking for __ANDROID__ - not found
+-- Looking for __FreeBSD__
+-- Looking for __FreeBSD__ - not found
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/cc
+-- Found ZLIB: /private/home/vtejomur/compression/bench_tools/SPRING/cloudflare_zlib/libz.a (found version "1.2.8") 
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /private/home/vtejomur/compression/bench_tools/SPRING/build
+[  0%] Building CXX object boost-cmake/CMakeFiles/Boost_iostreams.dir/boost/boost_1_67_0/libs/iostreams/src/file_descriptor.cpp.o
+[  0%] Building CXX object boost-cmake/CMakeFiles/Boost_system.dir/boost/boost_1_67_0/libs/system/src/error_code.cpp.o
+[  4%] Building CXX object boost-cmake/CMakeFiles/Boost_iostreams.dir/boost/boost_1_67_0/libs/iostreams/src/mapped_file.cpp.o
+[  4%] Building CXX object boost-cmake/CMakeFiles/Boost_iostreams.dir/boost/boost_1_67_0/libs/iostreams/src/zlib.cpp.o
+[  4%] Building CXX object boost-cmake/CMakeFiles/Boost_iostreams.dir/boost/boost_1_67_0/libs/iostreams/src/gzip.cpp.o
+[  9%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/options_description.cpp.o
+[  9%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/cmdline.cpp.o
+[  9%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/config_file.cpp.o
+[ 14%] Linking CXX static library libboost_system.a
+[ 14%] Built target Boost_system
+[ 14%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/parsers.cpp.o
+[ 14%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/variables_map.cpp.o
+[ 19%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/value_semantic.cpp.o
+[ 19%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/positional_options.cpp.o
+[ 19%] Linking CXX static library libboost_iostreams.a
+[ 19%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/utf8_codecvt_facet.cpp.o
+[ 19%] Built target Boost_iostreams
+[ 23%] Building CXX object boost-cmake/CMakeFiles/Boost_filesystem.dir/boost/boost_1_67_0/libs/filesystem/src/codecvt_error_category.cpp.o
+[ 28%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/convert.cpp.o
+[ 28%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/winmain.cpp.o
+[ 28%] Building CXX object boost-cmake/CMakeFiles/Boost_filesystem.dir/boost/boost_1_67_0/libs/filesystem/src/operations.cpp.o
+[ 28%] Building CXX object boost-cmake/CMakeFiles/Boost_program_options.dir/boost/boost_1_67_0/libs/program_options/src/split.cpp.o
+[ 28%] Building CXX object boost-cmake/CMakeFiles/Boost_filesystem.dir/boost/boost_1_67_0/libs/filesystem/src/path.cpp.o
+[ 33%] Building CXX object boost-cmake/CMakeFiles/Boost_filesystem.dir/boost/boost_1_67_0/libs/filesystem/src/path_traits.cpp.o
+[ 33%] Building CXX object boost-cmake/CMakeFiles/Boost_filesystem.dir/boost/boost_1_67_0/libs/filesystem/src/portability.cpp.o
+[ 33%] Building CXX object boost-cmake/CMakeFiles/Boost_filesystem.dir/boost/boost_1_67_0/libs/filesystem/src/unique_path.cpp.o
+[ 33%] Building CXX object boost-cmake/CMakeFiles/Boost_filesystem.dir/boost/boost_1_67_0/libs/filesystem/src/utf8_codecvt_facet.cpp.o
+[ 38%] Building CXX object boost-cmake/CMakeFiles/Boost_filesystem.dir/boost/boost_1_67_0/libs/filesystem/src/windows_file_codecvt.cpp.o
+[ 38%] Linking CXX static library libboost_filesystem.a
+[ 38%] Built target Boost_filesystem
+[ 38%] Linking CXX static library libboost_program_options.a
+[ 38%] Built target Boost_program_options
+[ 42%] Building CXX object CMakeFiles/spring.dir/src/spring.cpp.o
+[ 42%] Building CXX object CMakeFiles/spring.dir/src/util.cpp.o
+[ 47%] Building CXX object CMakeFiles/spring.dir/src/preprocess.cpp.o
+[ 47%] Building CXX object CMakeFiles/spring.dir/src/bitset_util.cpp.o
+[ 47%] Building CXX object CMakeFiles/spring.dir/src/main.cpp.o
+[ 52%] Building CXX object CMakeFiles/spring.dir/src/reorder_compress_streams.cpp.o
+[ 52%] Building CXX object CMakeFiles/spring.dir/src/pe_encode.cpp.o
+[ 52%] Building CXX object CMakeFiles/spring.dir/src/encoder.cpp.o
+[ 52%] Building CXX object CMakeFiles/spring.dir/src/reorder_compress_quality_id.cpp.o
+[ 52%] Building CXX object CMakeFiles/spring.dir/src/decompress.cpp.o
+[ 57%] Building CXX object CMakeFiles/spring.dir/src/call_template_functions.cpp.o
+[ 57%] Building CXX object CMakeFiles/spring.dir/src/id_compression/src/Arithmetic_stream.cpp.o
+/private/home/vtejomur/compression/bench_tools/SPRING/src/id_compression/src/Arithmetic_stream.cpp: In function ‘spring::id_comp::io_stream_t* spring::id_comp::alloc_io_stream(uint8_t, FILE*)’:
+/private/home/vtejomur/compression/bench_tools/SPRING/src/id_compression/src/Arithmetic_stream.cpp:44:12: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   44 |       fread(rtn->buf, sizeof(uint8_t), IO_STREAM_BUF_LEN, rtn->fp);
+      |       ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ 57%] Building CXX object CMakeFiles/spring.dir/src/id_compression/src/compression.cpp.o
+[ 57%] Building CXX object CMakeFiles/spring.dir/src/id_compression/src/id_compression.cpp.o
+[ 61%] Building CXX object CMakeFiles/spring.dir/src/id_compression/src/io_functions.cpp.o
+/private/home/vtejomur/compression/bench_tools/SPRING/src/id_compression/src/io_functions.cpp: In function ‘void spring::id_comp::open_new_iofile(spring::id_comp::io_stream_t*)’:
+/private/home/vtejomur/compression/bench_tools/SPRING/src/id_compression/src/io_functions.cpp:43:12: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   43 |       fread(ios->buf, sizeof(uint8_t), IO_STREAM_BUF_LEN, ios->fp);
+      |       ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/id_compression/src/io_functions.cpp:63:12: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   63 |       fread(ios->buf, sizeof(uint8_t), IO_STREAM_BUF_LEN, ios->fp);
+      |       ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/id_compression/src/io_functions.cpp: In function ‘void spring::id_comp::stream_write_buffer(spring::id_comp::io_stream_t*)’:
+/private/home/vtejomur/compression/bench_tools/SPRING/src/id_compression/src/io_functions.cpp:101:12: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  101 |       fread(os->buf, sizeof(uint8_t), IO_STREAM_BUF_LEN, os->fp);
+      |       ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[ 61%] Building CXX object CMakeFiles/spring.dir/src/id_compression/src/sam_file_allocation.cpp.o
+[ 66%] Building CXX object CMakeFiles/spring.dir/src/id_compression/src/sam_models.cpp.o
+[ 66%] Building CXX object CMakeFiles/spring.dir/src/id_compression/src/stream_model.cpp.o
+[ 66%] Building CXX object CMakeFiles/spring.dir/src/libbsc/bsc.cpp.o
+[ 66%] Building CXX object CMakeFiles/spring.dir/src/libbsc/bsc_str_array.cpp.o
+[ 66%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/adler32/adler32.cpp.o
+[ 71%] Building C object CMakeFiles/spring.dir/src/libbsc/libbsc/bwt/divsufsort/divsufsort.c.o
+[ 71%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/bwt/bwt.cpp.o
+[ 71%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/coder/coder.cpp.o
+[ 76%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/coder/qlfc/qlfc.cpp.o
+[ 76%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/coder/qlfc/qlfc_model.cpp.o
+[ 76%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/filters/detectors.cpp.o
+[ 76%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/filters/preprocessing.cpp.o
+[ 80%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/libbsc/libbsc.cpp.o
+[ 80%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/lzp/lzp.cpp.o
+[ 80%] Building CXX object CMakeFiles/spring.dir/src/libbsc/libbsc/platform/platform.cpp.o
+[ 85%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/cluster.cpp.o
+[ 85%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/codebook.cpp.o
+[ 85%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/distortion.cpp.o
+[ 85%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/lines.cpp.o
+[ 90%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/pmf.cpp.o
+[ 90%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/quantizer.cpp.o
+[ 90%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/qv_compressor.cpp.o
+[ 95%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/qvz.cpp.o
+[ 95%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/util.cpp.o
+[ 95%] Building CXX object CMakeFiles/spring.dir/src/qvz/src/well.cpp.o
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp: In function ‘void spring::qvz::read_codebooks(FILE*, spring::qvz::quality_file_t*)’:
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:653:8: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  653 |   fread(line, sizeof(char), 9, fp);
+      |   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp: In function ‘spring::qvz::cond_quantizer_list_t* spring::qvz::read_codebook(FILE*, spring::qvz::quality_file_t*)’:
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:694:8: warning: ignoring return value of ‘char* fgets(char*, int, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  694 |   fgets(line, MAX_CODEBOOK_LINE_LENGTH, fp);
+      |   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:700:8: warning: ignoring return value of ‘char* fgets(char*, int, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  700 |   fgets(line, MAX_CODEBOOK_LINE_LENGTH, fp);
+      |   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:702:8: warning: ignoring return value of ‘char* fgets(char*, int, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  702 |   fgets(line, MAX_CODEBOOK_LINE_LENGTH, fp);
+      |   ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:722:10: warning: ignoring return value of ‘char* fgets(char*, int, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  722 |     fgets(line, MAX_CODEBOOK_LINE_LENGTH, fp);
+      |     ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:730:12: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  730 |       fread(line, A->size * sizeof(symbol_t), 1, fp);
+      |       ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:739:16: warning: ignoring return value of ‘char* fgets(char*, int, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  739 |     (void)fgets(line, 2, fp);
+      |           ~~~~~^~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:744:12: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  744 |       fread(line, A->size * sizeof(symbol_t), 1, fp);
+      |       ~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/private/home/vtejomur/compression/bench_tools/SPRING/src/qvz/src/codebook.cpp:753:16: warning: ignoring return value of ‘char* fgets(char*, int, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  753 |     (void)fgets(line, 2, fp);
+      |           ~~~~~^~~~~~~~~~~~~
+[100%] Linking CXX executable spring
+lto-wrapper: warning: using serial compilation of 39 LTRANS jobs
+[100%] Built target spring
+===== QVZ =====
+Cloning into 'qvz'...
+make -C src
+make[1]: Entering directory '/private/home/vtejomur/compression/bench_tools/qvz/src'
+gcc -O3 -Wall -I../include -DLINUX -c well.c
+gcc -O3 -Wall -I../include -DLINUX -c codebook.c
+gcc -O3 -Wall -I../include -DLINUX -c main.c
+gcc -O3 -Wall -I../include -DLINUX -c util.c
+gcc -O3 -Wall -I../include -DLINUX -c lines.c
+gcc -O3 -Wall -I../include -DLINUX -c quantizer.c
+gcc -O3 -Wall -I../include -DLINUX -c pmf.c
+gcc -O3 -Wall -I../include -DLINUX -c distortion.c
+lines.c: In function ‘load_file’:
+lines.c:44:9: warning: ignoring return value of ‘fgets’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   44 |         fgets(line, READ_LINEBUF_LENGTH, fp);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+main.c: In function ‘encode’:
+main.c:116:35: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  116 |                 printf("Lines: %llu\n", qv_info.lines);
+      |                                ~~~^     ~~~~~~~~~~~~~
+      |                                   |            |
+      |                                   |            uint64_t {aka long unsigned int}
+      |                                   long long unsigned int
+      |                                %lu
+main.c:118:46: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  118 |                 printf("Total bytes used: %llu\n", bytes_used);
+      |                                           ~~~^     ~~~~~~~~~~
+      |                                              |     |
+      |                                              |     uint64_t {aka long unsigned int}
+      |                                              long long unsigned int
+      |                                           %lu
+main.c:125:76: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 5 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  125 |                 printf("rate, %.4f, distortion, %.4f, time, %.4f, size, %llu \n", (bytes_used*8.)/((double)(qv_info.lines)*qv_info.columns), distortion, get_timer_interval(&total), bytes_used);
+      |                                                                         ~~~^                                                                                                         ~~~~~~~~~~
+      |                                                                            |                                                                                                         |
+      |                                                                            long long unsigned int                                                                                    uint64_t {aka long unsigned int}
+      |                                                                         %lu
+main.c: In function ‘decode’:
+main.c:158:36: warning: format ‘%llu’ expects argument of type ‘long long unsigned int’, but argument 2 has type ‘uint64_t’ {aka ‘long unsigned int’} [-Wformat=]
+  158 |                 printf("Decoded %llu lines in %f seconds.\n", qv_info.lines, get_timer_interval(&timer));
+      |                                 ~~~^                          ~~~~~~~~~~~~~
+      |                                    |                                 |
+      |                                    long long unsigned int            uint64_t {aka long unsigned int}
+      |                                 %lu
+codebook.c: In function ‘read_codebooks’:
+codebook.c:565:9: warning: ignoring return value of ‘fread’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  565 |         fread(line, sizeof(char), 9, fp);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+codebook.c: In function ‘read_codebook’:
+codebook.c:603:9: warning: ignoring return value of ‘fgets’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  603 |         fgets(line, MAX_CODEBOOK_LINE_LENGTH, fp);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+codebook.c:609:9: warning: ignoring return value of ‘fgets’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  609 |         fgets(line, MAX_CODEBOOK_LINE_LENGTH, fp);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+codebook.c:611:9: warning: ignoring return value of ‘fgets’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  611 |         fgets(line, MAX_CODEBOOK_LINE_LENGTH, fp);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+codebook.c:631:17: warning: ignoring return value of ‘fgets’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  631 |                 fgets(line, MAX_CODEBOOK_LINE_LENGTH, fp);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+codebook.c:639:25: warning: ignoring return value of ‘fread’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  639 |                         fread(line, A->size*sizeof(symbol_t), 1, fp);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+codebook.c:648:24: warning: ignoring return value of ‘fgets’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  648 |                 (void) fgets(line, 2, fp);
+      |                        ^~~~~~~~~~~~~~~~~~
+codebook.c:653:25: warning: ignoring return value of ‘fread’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  653 |                         fread(line, A->size*sizeof(symbol_t), 1, fp);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+codebook.c:662:24: warning: ignoring return value of ‘fgets’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  662 |                 (void) fgets(line, 2, fp);
+      |                        ^~~~~~~~~~~~~~~~~~
+gcc -O3 -Wall -I../include -DLINUX -c qv_stream.c
+gcc -O3 -Wall -I../include -DLINUX -c qv_compressor.c
+gcc -O3 -Wall -I../include -DLINUX -c arith.c
+qv_stream.c: In function ‘initialize_arithStream’:
+qv_stream.c:73:9: warning: ignoring return value of ‘fread’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   73 |         fread(info->well.state, sizeof(uint32_t), 32, fout);
+      |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gcc -O3 -Wall -I../include -DLINUX -c os_stream.c
+gcc -O3 -Wall -I../include -DLINUX -c cluster.c
+os_stream.c: In function ‘alloc_os_stream’:
+os_stream.c:14:17: warning: ignoring return value of ‘fread’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   14 |                 fread(rtn->buf, sizeof(uint8_t), OS_STREAM_BUF_LEN, fp);
+      |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+os_stream.c: In function ‘stream_read_bit’:
+os_stream.c:45:25: warning: ignoring return value of ‘fread’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+   45 |                         fread(os->buf, sizeof(uint8_t), OS_STREAM_BUF_LEN, os->fp);
+      |                         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+gcc well.o codebook.o main.o util.o lines.o quantizer.o pmf.o distortion.o qv_stream.o qv_compressor.o arith.o os_stream.o cluster.o -o qvz -lc -lm -lrt
+make[1]: Leaving directory '/private/home/vtejomur/compression/bench_tools/qvz/src'
+mkdir -p bin
+mv src/qvz bin/qvz
+
+===== BUILT EXECUTABLES =====
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/datasets/hs1/download_script.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/datasets/hs2/download_script.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/datasets/joi/download_script.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/datasets/lun/download_script.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/datasets/npd/download_script.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/datasets/sor/download_script.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/datasets/vir/download_script.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/enano/base_modelN.h
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/enano/clr.h
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/enano/enano
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/enano/enano_fastq.cpp
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/enano/simple_model.h
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/applypatch-msg.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/commit-msg.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/fsmonitor-watchman.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/post-update.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/pre-applypatch.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/pre-commit.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/pre-merge-commit.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/prepare-commit-msg.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/pre-push.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/pre-rebase.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/pre-receive.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/push-to-checkout.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/.git/hooks/update.sample
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/install_SRA_centos.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/install_SRA_mac.sh
+/private/home/vtejomur/compression/bench_tools/EnanoFASTQ/install_SRA_ubuntu.sh
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/fqzcomp5
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/applypatch-msg.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/commit-msg.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/fsmonitor-watchman.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/post-update.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/pre-applypatch.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/pre-commit.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/pre-merge-commit.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/prepare-commit-msg.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/pre-push.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/pre-rebase.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/pre-receive.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/push-to-checkout.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/.git/hooks/update.sample
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/compile
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/config.guess
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/config.status
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/config.sub
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/configure
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/depcomp
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/install-sh
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/libtool
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/ltmain.sh
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/missing
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/test-driver
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/arith_dynamic
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/arith.test
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/benchmark.sh
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/entropy
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/entropy.test
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/fqzcomp_qual
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/fqzcomp.test
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/rans4x16pr
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/rans4x16.test
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/rans4x8
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/rans4x8.test
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/tok3.test
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/tokenise_name3
+/private/home/vtejomur/compression/bench_tools/fqzcomp5/htscodecs/tests/varint
+/private/home/vtejomur/compression/bench_tools/qvz/bin/qvz
+/private/home/vtejomur/compression/bench_tools/qvz/generate_rd.sh
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/applypatch-msg.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/commit-msg.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/fsmonitor-watchman.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/post-update.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/pre-applypatch.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/pre-commit.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/pre-merge-commit.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/prepare-commit-msg.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/pre-push.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/pre-rebase.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/pre-receive.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/push-to-checkout.sample
+/private/home/vtejomur/compression/bench_tools/qvz/.git/hooks/update.sample
+/private/home/vtejomur/compression/bench_tools/qvz/test.sh
+/private/home/vtejomur/compression/bench_tools/SPRING/boost-cmake/repack.sh
+/private/home/vtejomur/compression/bench_tools/SPRING/build/spring
+/private/home/vtejomur/compression/bench_tools/SPRING/cloudflare_zlib/configure
+/private/home/vtejomur/compression/bench_tools/SPRING/cloudflare_zlib/example
+/private/home/vtejomur/compression/bench_tools/SPRING/cloudflare_zlib/minigzip
+/private/home/vtejomur/compression/bench_tools/SPRING/cloudflare_zlib/test/minigzip.c
+/private/home/vtejomur/compression/bench_tools/SPRING/cloudflare_zlib/win32/Makefile.msc
+/private/home/vtejomur/compression/bench_tools/SPRING/cloudflare_zlib/zlib2ansi
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/applypatch-msg.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/commit-msg.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/fsmonitor-watchman.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/post-update.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/pre-applypatch.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/pre-commit.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/pre-merge-commit.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/prepare-commit-msg.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/pre-push.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/pre-rebase.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/pre-receive.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/push-to-checkout.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/.git/hooks/update.sample
+/private/home/vtejomur/compression/bench_tools/SPRING/util/fastore_compress.sh
+/private/home/vtejomur/compression/bench_tools/SPRING/util/test_script.sh
